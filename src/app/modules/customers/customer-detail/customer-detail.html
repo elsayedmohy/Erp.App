@@ -1,0 +1,84 @@
+<div class="page">
+  <app-page-header
+    [heading]="customer.name"
+    [subtitle]="customer.city + ', ' + customer.country"
+    [breadcrumbs]="[
+      { label: 'Sales' },
+      { label: 'Customers', link: '/customers' },
+      { label: customer.name },
+    ]"
+  >
+    <a
+      tuiButton
+      appearance="secondary"
+      size="m"
+      iconStart="@tui.pencil"
+      [routerLink]="['/customers', customer.id, 'edit']"
+      >Edit</a
+    >
+    <a tuiButton appearance="secondary" size="m" iconStart="@tui.plus" routerLink="/orders/new"
+      >New order</a
+    >
+    <button
+      tuiButton
+      appearance="destructive"
+      size="m"
+      iconStart="@tui.trash-2"
+      type="button"
+      (click)="confirmOpen.set(true)"
+    >
+      Delete
+    </button>
+  </app-page-header>
+
+  <tui-tabs [(activeItemIndex)]="tab">
+    <button tuiTab type="button" iconStart="@tui.info">Info</button>
+    <button tuiTab type="button" iconStart="@tui.receipt">Orders</button>
+    <button tuiTab type="button" iconStart="@tui.file-text">Invoices</button>
+  </tui-tabs>
+
+  @switch (tab()) {
+    @case (0) {
+      <section tuiCardLarge appearance="outline-grayscale">
+        <dl class="dl">
+          <dt>Email</dt>
+          <dd>{{ customer.email }}</dd>
+          <dt>Phone</dt>
+          <dd>{{ customer.phone }}</dd>
+          <dt>Address</dt>
+          <dd>{{ customer.address }}</dd>
+          <dt>City</dt>
+          <dd>{{ customer.city }}</dd>
+          <dt>Country</dt>
+          <dd>{{ customer.country }}</dd>
+          <dt>Tax ID</dt>
+          <dd>
+            <code>{{ customer.taxId }}</code>
+          </dd>
+        </dl>
+      </section>
+    }
+    @case (1) {
+      <app-data-table
+        [columns]="orderColumns"
+        [rows]="orders"
+        baseRoute="/orders"
+        [actions]="['view']"
+      />
+    }
+    @case (2) {
+      <app-data-table
+        [columns]="invoiceColumns"
+        [rows]="invoices"
+        baseRoute="/invoices"
+        [actions]="['view']"
+      />
+    }
+  }
+
+  <app-confirm-dialog
+    [(open)]="confirmOpen"
+    heading="Delete customer?"
+    message="The customer will be archived (soft delete)."
+  />
+</div>

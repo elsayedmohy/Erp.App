@@ -1,0 +1,47 @@
+:host {
+  display: block;
+}
+
+.table {
+  inline-size: 100%;
+}
+
+.num {
+  text-align: end;
+}
+
+.narrow {
+  inline-size: 2.5rem;
+}
+
+.actions-col {
+  inline-size: 1%;
+  white-space: nowrap;
+}
+
+.row-actions {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: flex-end;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.pagination {
+  margin-block-start: 0.75rem;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-inline-size: 8rem;
+
+  progress {
+    flex: 1;
+  }
+}

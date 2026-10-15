@@ -1,0 +1,50 @@
+import { Routes } from '@angular/router';
+import { AuthLayout } from './layout/auth-layout/auth-layout';
+import { Shell } from './layout/shell/shell';
+
+export const routes: Routes = [
+  {
+    path: 'login',
+    component: AuthLayout,
+    children: [
+      { path: '', loadComponent: () => import('./modules/auth/login/login').then((m) => m.Login) },
+    ],
+  },
+  {
+    path: '',
+    component: Shell,
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./modules/dashboard/dashboard').then((m) => m.Dashboard),
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./modules/auth/profile/profile').then((m) => m.Profile),
+      },
+      // Level 1
+      { path: 'users', loadChildren: () => import('./modules/users/users.routes') },
+      { path: 'customers', loadChildren: () => import('./modules/customers/customers.routes') },
+      { path: 'products', loadChildren: () => import('./modules/products/products.routes') },
+      { path: 'suppliers', loadChildren: () => import('./modules/suppliers/suppliers.routes') },
+      { path: 'purchasing', loadChildren: () => import('./modules/purchasing/purchasing.routes') },
+      { path: 'orders', loadChildren: () => import('./modules/orders/orders.routes') },
+      { path: 'invoices', loadChildren: () => import('./modules/invoices/invoices.routes') },
+      { path: 'employees', loadChildren: () => import('./modules/employees/employees.routes') },
+      // Level 2
+      { path: 'projects', loadChildren: () => import('./modules/projects/projects.routes') },
+      { path: 'tasks', loadChildren: () => import('./modules/tasks/tasks.routes') },
+      // Level 3
+      { path: 'reports', loadChildren: () => import('./modules/reports/reports.routes') },
+      { path: 'automation', loadChildren: () => import('./modules/automation/automation.routes') },
+      {
+        path: 'notifications',
+        loadChildren: () => import('./modules/notifications/notifications.routes'),
+      },
+      { path: 'audit', loadChildren: () => import('./modules/audit/audit.routes') },
+      { path: 'webhooks', loadChildren: () => import('./modules/webhooks/webhooks.routes') },
+    ],
+  },
+  { path: '**', redirectTo: 'dashboard' },
+];

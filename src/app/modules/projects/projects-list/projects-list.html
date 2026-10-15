@@ -1,0 +1,66 @@
+<div class="page">
+  <app-page-header
+    heading="Projects"
+    subtitle="Group related work with an owner, dates and status"
+    [breadcrumbs]="[{ label: 'Work' }, { label: 'Projects' }]"
+  >
+    <a tuiButton size="m" iconStart="@tui.plus" routerLink="new">New project</a>
+  </app-page-header>
+
+  <app-filter-bar placeholder="Search projects">
+    <tui-textfield tuiChevron tuiTextfieldSize="m">
+      <input tuiSelect placeholder="All statuses" [(ngModel)]="status" />
+      <tui-data-list-wrapper *tuiDropdown [items]="statuses" />
+    </tui-textfield>
+    <tui-textfield tuiChevron tuiTextfieldSize="m">
+      <input tuiSelect placeholder="All owners" [(ngModel)]="owner" />
+      <tui-data-list-wrapper *tuiDropdown [items]="owners" />
+    </tui-textfield>
+    <tui-segmented size="m" [(activeItemIndex)]="view">
+      <button type="button" title="Cards"><tui-icon icon="@tui.layout-grid" /></button>
+      <button type="button" title="Table"><tui-icon icon="@tui.list" /></button>
+    </tui-segmented>
+  </app-filter-bar>
+
+  @if (view() === 0) {
+    <div class="cards">
+      @for (project of projects; track project.id) {
+        <a
+          tuiCardLarge
+          appearance="outline-grayscale"
+          class="card"
+          [routerLink]="['/projects', project.id]"
+        >
+          <header tuiHeader="h5">
+            <h3 tuiTitle>
+              {{ project.name }}
+              <span tuiSubtitle>{{ project.description }}</span>
+            </h3>
+            <app-status-badge tuiAccessories [status]="project.status" size="s" />
+          </header>
+          <div class="meta">
+            <div tuiCell size="s">
+              <div tuiAvatar size="xs" appearance="secondary">{{ project.owner[0] }}</div>
+              <span>{{ project.owner }}</span>
+            </div>
+            <span class="muted due">
+              <tui-icon icon="@tui.calendar" class="ico" />
+              {{ project.dueDate }}
+            </span>
+          </div>
+          <div class="progress">
+            <progress tuiProgressBar size="s" max="100" [value]="project.progress"></progress>
+            <span class="muted">{{ project.progress }}% · {{ project.tasksCount }} tasks</span>
+          </div>
+        </a>
+      }
+    </div>
+  } @else {
+    <app-data-table
+      [columns]="columns"
+      [rows]="projects"
+      baseRoute="/projects"
+      deleteMessage="Projects with active tasks cannot be deleted. Archive it or complete/reassign its tasks first."
+    />
+  }
+</div>

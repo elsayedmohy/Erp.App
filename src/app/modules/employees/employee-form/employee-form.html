@@ -1,0 +1,75 @@
+<div class="page">
+  <app-page-header
+    [heading]="mode() === 'edit' ? 'Edit employee' : 'New employee'"
+    [breadcrumbs]="[
+      { label: 'HR' },
+      { label: 'Employees', link: '/employees' },
+      { label: mode() === 'edit' ? 'Edit' : 'New' },
+    ]"
+  />
+
+  <form [formGroup]="form" class="grid-3">
+    <section tuiCardLarge appearance="outline-grayscale" tuiForm="m" class="span-2">
+      <header tuiHeader="h5"><h3 tuiTitle>Personal</h3></header>
+      <div class="grid-2">
+        <tui-textfield>
+          <label tuiLabel>First name</label>
+          <input tuiInput formControlName="firstName" placeholder="Sara" />
+        </tui-textfield>
+        <tui-textfield>
+          <label tuiLabel>Last name</label>
+          <input tuiInput formControlName="lastName" placeholder="Ahmed" />
+        </tui-textfield>
+        <tui-textfield>
+          <label tuiLabel>Email</label>
+          <input tuiInput formControlName="email" type="email" />
+        </tui-textfield>
+        <tui-textfield>
+          <label tuiLabel>Phone</label>
+          <input tuiInput formControlName="phone" type="tel" />
+        </tui-textfield>
+      </div>
+
+      <header tuiHeader="h5"><h3 tuiTitle>Employment</h3></header>
+      <div class="grid-2">
+        <tui-textfield tuiChevron>
+          <label tuiLabel>Department</label>
+          <input tuiSelect formControlName="department" />
+          <tui-data-list-wrapper *tuiDropdown [items]="departments" />
+        </tui-textfield>
+        <tui-textfield>
+          <label tuiLabel>Position</label>
+          <input tuiInput formControlName="position" placeholder="Senior Developer" />
+        </tui-textfield>
+        <tui-textfield>
+          <label tuiLabel>Hire date</label>
+          <input tuiInputDate formControlName="hireDate" />
+          <tui-calendar *tuiDropdown />
+        </tui-textfield>
+        <tui-textfield>
+          <label tuiLabel>Salary</label>
+          <input tuiInputNumber prefix="$ " formControlName="salary" />
+        </tui-textfield>
+      </div>
+
+      <footer>
+        <a tuiButton appearance="secondary" size="m" routerLink="/employees">Cancel</a>
+        <button tuiButton size="m" type="button">
+          {{ mode() === 'edit' ? 'Update' : 'Save' }}
+        </button>
+      </footer>
+    </section>
+
+    <section tuiCardLarge appearance="outline-grayscale">
+      <header tuiHeader="h5">
+        <h3 tuiTitle>
+          Profile photo
+          <span tuiSubtitle>Optional</span>
+        </h3>
+      </header>
+      <label tuiInputFiles>
+        <input accept="image/*" tuiInputFiles formControlName="photo" />
+      </label>
+    </section>
+  </form>
+</div>

@@ -1,0 +1,138 @@
+<div class="page">
+  <app-page-header
+    [heading]="task.title"
+    [subtitle]="task.project"
+    [breadcrumbs]="[
+      { label: 'Work' },
+      { label: 'Tasks', link: '/tasks' },
+      { label: '#' + task.id },
+    ]"
+  >
+    <button
+      tuiButton
+      appearance="secondary"
+      size="m"
+      tuiChevron
+      type="button"
+      tuiDropdownAuto
+      [tuiDropdown]="statusMenu"
+    >
+      Update status
+    </button>
+    <ng-template #statusMenu>
+      <tui-data-list>
+        @for (s of statuses; track s) {
+          <button tuiOption type="button">{{ s }}</button>
+        }
+      </tui-data-list>
+    </ng-template>
+    <a
+      tuiButton
+      appearance="secondary"
+      size="m"
+      iconStart="@tui.pencil"
+      [routerLink]="['/tasks', task.id, 'edit']"
+      >Edit</a
+    >
+    <button
+      tuiButton
+      appearance="flat-destructive"
+      size="m"
+      iconStart="@tui.trash-2"
+      type="button"
+      (click)="deleteOpen.set(true)"
+    >
+      Delete
+    </button>
+  </app-page-header>
+
+  <div class="grid-3">
+    <div class="span-2 column">
+      <section tuiCardLarge appearance="outline-grayscale">
+        <header tuiHeader="h5"><h3 tuiTitle>Description</h3></header>
+        <p class="description">{{ task.description }}</p>
+      </section>
+
+      <section tuiCardLarge appearance="outline-grayscale">
+        <header tuiHeader="h5">
+          <h3 tuiTitle>
+            Comments
+            <span tuiSubtitle>{{ comments.length }} comments</span>
+          </h3>
+        </header>
+
+        <ul class="comments">
+          @for (comment of comments; track comment.id) {
+            <li class="comment">
+              <div tuiAvatar size="s" appearance="secondary">{{ comment.author[0] }}</div>
+              <div class="comment__body">
+                <div class="comment__head">
+                  <strong>{{ comment.author }}</strong>
+                  <span class="muted">{{ comment.createdAt }}</span>
+                  <span class="spacer"></span>
+                  <button
+                    tuiIconButton
+                    appearance="flat-grayscale"
+                    size="xs"
+                    iconStart="@tui.pencil"
+                    type="button"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    tuiIconButton
+                    appearance="flat-grayscale"
+                    size="xs"
+                    iconStart="@tui.trash-2"
+                    type="button"
+                    (click)="deleteCommentOpen.set(true)"
+                  >
+                    Delete
+                  </button>
+                </div>
+                <p>{{ comment.body }}</p>
+              </div>
+            </li>
+          }
+        </ul>
+
+        <div class="new-comment">
+          <div tuiAvatar size="s" appearance="accent">AU</div>
+          <tui-textfield class="grow">
+            <label tuiLabel>Add a comment</label>
+            <textarea tuiTextarea [(ngModel)]="newComment"></textarea>
+          </tui-textfield>
+        </div>
+        <footer>
+          <button tuiButton size="m" iconStart="@tui.send" type="button">Comment</button>
+        </footer>
+      </section>
+    </div>
+
+    <section tuiCardLarge appearance="outline-grayscale" class="aside">
+      <header tuiHeader="h5"><h3 tuiTitle>Details</h3></header>
+      <dl class="dl">
+        <dt>Status</dt>
+        <dd><app-status-badge [status]="task.status" /></dd>
+        <dt>Priority</dt>
+        <dd><app-status-badge [status]="task.priority" /></dd>
+        <dt>Assignee</dt>
+        <dd>
+          <div tuiCell size="s">
+            <div tuiAvatar size="xs" appearance="secondary">{{ task.assignee[0] }}</div>
+            {{ task.assignee }}
+          </div>
+        </dd>
+        <dt>Project</dt>
+        <dd>
+          <a tuiLink routerLink="/projects/24">{{ task.project }}</a>
+        </dd>
+        <dt>Due date</dt>
+        <dd>{{ task.dueDate }}</dd>
+      </dl>
+    </section>
+  </div>
+
+  <app-confirm-dialog [(open)]="deleteOpen" heading="Delete task?" />
+  <app-confirm-dialog [(open)]="deleteCommentOpen" heading="Delete comment?" />
+</div>

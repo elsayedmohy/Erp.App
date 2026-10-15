@@ -1,0 +1,127 @@
+<div class="page">
+  <app-page-header
+    [heading]="project.name"
+    [subtitle]="project.description"
+    [breadcrumbs]="[
+      { label: 'Work' },
+      { label: 'Projects', link: '/projects' },
+      { label: project.name },
+    ]"
+  >
+    <button
+      tuiButton
+      appearance="secondary"
+      size="m"
+      tuiChevron
+      type="button"
+      tuiDropdownAuto
+      [tuiDropdown]="statusMenu"
+    >
+      Change status
+    </button>
+    <ng-template #statusMenu>
+      <tui-data-list>
+        @for (s of statuses; track s) {
+          <button tuiOption type="button">{{ s }}</button>
+        }
+      </tui-data-list>
+    </ng-template>
+    <a
+      tuiButton
+      appearance="secondary"
+      size="m"
+      iconStart="@tui.pencil"
+      [routerLink]="['/projects', project.id, 'edit']"
+      >Edit</a
+    >
+    <button
+      tuiButton
+      appearance="flat-destructive"
+      size="m"
+      iconStart="@tui.trash-2"
+      type="button"
+      (click)="deleteOpen.set(true)"
+    >
+      Delete
+    </button>
+    <a tuiButton size="m" iconStart="@tui.plus" routerLink="/tasks/new">New task</a>
+  </app-page-header>
+
+  <div class="stats">
+    <app-stat-card label="Status" [value]="project.status" icon="@tui.activity" />
+    <app-stat-card label="Progress" [value]="project.progress + '%'" icon="@tui.chart-line" />
+    <app-stat-card label="Tasks" [value]="'' + project.tasksCount" icon="@tui.list-checks" />
+    <app-stat-card label="Due date" [value]="project.dueDate" icon="@tui.calendar" />
+  </div>
+
+  <tui-tabs [(activeItemIndex)]="tab">
+    <button tuiTab type="button" iconStart="@tui.list-checks">Tasks</button>
+    <button tuiTab type="button" iconStart="@tui.users">Members</button>
+    <button tuiTab type="button" iconStart="@tui.info">Overview</button>
+  </tui-tabs>
+
+  @switch (tab()) {
+    @case (0) {
+      <app-data-table [columns]="taskColumns" [rows]="tasks" baseRoute="/tasks" />
+    }
+    @case (1) {
+      <section tuiCardLarge appearance="outline-grayscale">
+        <header tuiHeader="h5">
+          <h3 tuiTitle>Members</h3>
+          <button
+            tuiAccessories
+            tuiButton
+            appearance="secondary"
+            size="s"
+            iconStart="@tui.user-plus"
+            type="button"
+          >
+            Add member
+          </button>
+        </header>
+        <div class="members">
+          @for (member of members; track member.name) {
+            <div tuiCell>
+              <div tuiAvatar size="s" appearance="secondary">{{ member.name[0] }}</div>
+              <span tuiTitle>
+                {{ member.name }}
+                <span tuiSubtitle>{{ member.role }}</span>
+              </span>
+              <button
+                tuiIconButton
+                appearance="flat-grayscale"
+                size="xs"
+                iconStart="@tui.x"
+                type="button"
+              >
+                Remove
+              </button>
+            </div>
+          }
+        </div>
+      </section>
+    }
+    @case (2) {
+      <section tuiCardLarge appearance="outline-grayscale">
+        <dl class="dl">
+          <dt>Owner</dt>
+          <dd>{{ project.owner }}</dd>
+          <dt>Status</dt>
+          <dd><app-status-badge [status]="project.status" /></dd>
+          <dt>Start date</dt>
+          <dd>{{ project.startDate }}</dd>
+          <dt>Due date</dt>
+          <dd>{{ project.dueDate }}</dd>
+          <dt>Description</dt>
+          <dd>{{ project.description }}</dd>
+        </dl>
+      </section>
+    }
+  }
+
+  <app-confirm-dialog
+    [(open)]="deleteOpen"
+    heading="Delete project?"
+    message="A project cannot be deleted while it has active tasks. Archive it or complete/reassign its tasks first."
+  />
+</div>

@@ -1,0 +1,99 @@
+<div class="page">
+  <app-page-header
+    heading="Reports"
+    subtitle="Computed from live ERP records · base currency USD"
+    [breadcrumbs]="[{ label: 'Insights' }, { label: 'Reports' }]"
+  >
+    <button
+      tuiButton
+      appearance="secondary"
+      size="m"
+      iconStart="@tui.history"
+      type="button"
+      (click)="jobsOpen.set(true)"
+    >
+      Export jobs
+    </button>
+    <button
+      tuiButton
+      size="m"
+      iconStart="@tui.file-down"
+      type="button"
+      (click)="exportOpen.set(true)"
+    >
+      Export CSV
+    </button>
+  </app-page-header>
+
+  <tui-tabs>
+    <a tuiTab routerLink="sales" routerLinkActive iconStart="@tui.trending-up">Sales</a>
+    <a tuiTab routerLink="inventory" routerLinkActive iconStart="@tui.package">Inventory</a>
+    <a tuiTab routerLink="invoices" routerLinkActive iconStart="@tui.file-text">Invoices</a>
+    <a tuiTab routerLink="tasks" routerLinkActive iconStart="@tui.list-checks">Tasks</a>
+  </tui-tabs>
+
+  <router-outlet />
+</div>
+
+<!-- Queue export dialog (UI only) -->
+<ng-template
+  let-observer
+  [tuiDialogOptions]="{ size: 's', label: 'Export report as CSV' }"
+  [(tuiDialog)]="exportOpen"
+>
+  <form tuiForm="m">
+    <tui-textfield tuiChevron>
+      <label tuiLabel>Report</label>
+      <input tuiSelect name="report" [(ngModel)]="exportReport" />
+      <tui-data-list-wrapper *tuiDropdown [items]="reportTypes" />
+    </tui-textfield>
+    <div tuiNotification appearance="info" size="s">
+      The export runs in the background. The download link expires and is only available to you.
+    </div>
+    <footer>
+      <button tuiButton appearance="secondary" size="m" type="button" (click)="observer.complete()">
+        Cancel
+      </button>
+      <button tuiButton size="m" type="button" (click)="observer.complete()">Queue export</button>
+    </footer>
+  </form>
+</ng-template>
+
+<!-- Export jobs dialog -->
+<ng-template [tuiDialogOptions]="{ size: 'm', label: 'Export jobs' }" [(tuiDialog)]="jobsOpen">
+  <table tuiTable size="m" class="full-width">
+    <thead>
+      <tr>
+        <th tuiTh>Job</th>
+        <th tuiTh>Report</th>
+        <th tuiTh>Status</th>
+        <th tuiTh>Expires</th>
+        <th tuiTh></th>
+      </tr>
+    </thead>
+    <tbody tuiTbody>
+      @for (job of jobs; track job.id) {
+        <tr>
+          <td tuiTd>
+            <code>{{ job.id }}</code>
+          </td>
+          <td tuiTd>{{ job.report }}</td>
+          <td tuiTd><app-status-badge [status]="job.status" size="s" /></td>
+          <td tuiTd>{{ job.expiresAt }}</td>
+          <td tuiTd>
+            <button
+              tuiIconButton
+              appearance="flat"
+              size="xs"
+              iconStart="@tui.download"
+              type="button"
+              [disabled]="job.status !== 'Completed'"
+            >
+              Download
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</ng-template>

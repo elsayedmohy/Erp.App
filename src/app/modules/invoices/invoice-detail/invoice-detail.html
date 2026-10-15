@@ -1,0 +1,151 @@
+<div class="page">
+  <app-page-header
+    [heading]="invoice.number"
+    [subtitle]="invoice.customer"
+    [breadcrumbs]="[
+      { label: 'Finance' },
+      { label: 'Invoices', link: '/invoices' },
+      { label: invoice.number },
+    ]"
+  >
+    <button tuiButton appearance="secondary" size="m" iconStart="@tui.download" type="button">
+      Download PDF
+    </button>
+    <a
+      tuiButton
+      appearance="secondary"
+      size="m"
+      iconStart="@tui.pencil"
+      [routerLink]="['/invoices', invoice.id, 'edit']"
+      >Edit</a
+    >
+    <button
+      tuiButton
+      appearance="flat-destructive"
+      size="m"
+      iconStart="@tui.trash-2"
+      type="button"
+      (click)="deleteOpen.set(true)"
+    >
+      Delete
+    </button>
+    <button
+      tuiButton
+      size="m"
+      iconStart="@tui.circle-check"
+      type="button"
+      (click)="payOpen.set(true)"
+    >
+      Mark as paid
+    </button>
+  </app-page-header>
+
+  <section tuiCardLarge appearance="outline-grayscale" class="sheet">
+    <header class="sheet__head">
+      <div>
+        <h2 class="sheet__title">Invoice</h2>
+        <span class="muted">{{ invoice.number }}</span>
+      </div>
+      <app-status-badge [status]="invoice.status" size="l" />
+    </header>
+
+    <div class="grid-3">
+      <div>
+        <span class="muted">Billed to</span>
+        <p class="block">
+          <strong>{{ customer.name }}</strong
+          ><br />
+          {{ customer.address }}<br />
+          {{ customer.city }}, {{ customer.country }}<br />
+          Tax ID: {{ customer.taxId }}
+        </p>
+      </div>
+      <div>
+        <span class="muted">Invoice date</span>
+        <p class="block">{{ invoice.invoiceDate }}</p>
+        <span class="muted">Due date</span>
+        <p class="block">{{ invoice.dueDate }}</p>
+      </div>
+      <div>
+        <span class="muted">Amount due</span>
+        <p class="amount">$ {{ invoice.totalAmount | number: '1.2-2' }}</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table tuiTable size="m" class="full-width">
+        <thead>
+          <tr>
+            <th tuiTh>Description</th>
+            <th tuiTh class="num">Qty</th>
+            <th tuiTh class="num">Unit price</th>
+            <th tuiTh class="num">Tax</th>
+            <th tuiTh class="num">Amount</th>
+          </tr>
+        </thead>
+        <tbody tuiTbody>
+          @for (line of invoice.lines; track $index) {
+            <tr>
+              <td tuiTd>{{ line.product }}</td>
+              <td tuiTd class="num">{{ line.quantity }}</td>
+              <td tuiTd class="num">$ {{ line.unitPrice | number: '1.2-2' }}</td>
+              <td tuiTd class="num">{{ line.taxRate ?? 0 }}%</td>
+              <td tuiTd class="num">$ {{ line.quantity * line.unitPrice | number: '1.2-2' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <dl class="totals">
+      <dt>Subtotal</dt>
+      <dd>$ {{ invoice.totalAmount | number: '1.2-2' }}</dd>
+      <dt>Tax</dt>
+      <dd>$ 0.00</dd>
+      <dt><strong>Total</strong></dt>
+      <dd>
+        <strong>$ {{ invoice.totalAmount | number: '1.2-2' }}</strong>
+      </dd>
+    </dl>
+  </section>
+
+  <!-- Mark as paid dialog (UI only) -->
+  <ng-template
+    let-observer
+    [tuiDialogOptions]="{ size: 's', label: 'Mark invoice as paid' }"
+    [(tuiDialog)]="payOpen"
+  >
+    <form tuiForm="m" [formGroup]="payForm">
+      <tui-textfield>
+        <label tuiLabel>Payment date</label>
+        <input tuiInputDate formControlName="paymentDate" />
+        <tui-calendar *tuiDropdown />
+      </tui-textfield>
+      <tui-textfield tuiChevron>
+        <label tuiLabel>Payment method</label>
+        <input tuiSelect formControlName="paymentMethod" />
+        <tui-data-list-wrapper *tuiDropdown [items]="paymentMethods" />
+      </tui-textfield>
+      <footer>
+        <button
+          tuiButton
+          appearance="secondary"
+          size="m"
+          type="button"
+          (click)="observer.complete()"
+        >
+          Cancel
+        </button>
+        <button tuiButton size="m" type="button" (click)="observer.complete()">
+          Confirm payment
+        </button>
+      </footer>
+    </form>
+  </ng-template>
+
+  <app-confirm-dialog
+    [(open)]="deleteOpen"
+    heading="Delete invoice?"
+    message="Only Draft invoices can be deleted."
+  />
+</div>

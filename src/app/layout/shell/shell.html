@@ -1,0 +1,126 @@
+<header tuiNavigationHeader [attr.tuiTheme]="theme()">
+  <button
+    tuiIconButton
+    type="button"
+    [iconStart]="expanded() ? '@tui.panel-left-close' : '@tui.panel-left-open'"
+    (click)="expanded.set(!expanded())"
+  >
+    Toggle menu
+  </button>
+
+
+
+  <hr />
+
+  <button
+    tuiIconButton
+    type="button"
+    [iconStart]="darkMode() ? '@tui.sun' : '@tui.moon'"
+    (click)="darkMode.set(!darkMode())"
+  >
+    Toggle theme
+  </button>
+
+  <!-- Notifications dropdown -->
+  <button
+    tuiIconButton
+    iconStart="@tui.bell"
+    type="button"
+    tuiDropdownAuto
+    [tuiDropdown]="notificationsMenu"
+    [(tuiDropdownOpen)]="notificationsOpen"
+  >
+    Notifications
+    <tui-badge-notification>3</tui-badge-notification>
+  </button>
+  <ng-template #notificationsMenu>
+    <div class="notifications">
+      <header class="notifications__head">
+        <strong>Notifications</strong>
+        <button tuiLink type="button">Mark all as read</button>
+      </header>
+      <tui-data-list>
+        @for (n of notifications; track n.id) {
+          <a
+            tuiOption
+            routerLink="/notifications"
+            class="notification"
+            [class.notification_unread]="!n.read"
+          >
+            <span tuiTitle>
+              {{ n.title }}
+              <span tuiSubtitle>{{ n.body }}</span>
+            </span>
+            <span class="muted time">{{ n.createdAt }}</span>
+          </a>
+        }
+      </tui-data-list>
+      <a tuiButton appearance="flat" size="s" routerLink="/notifications" class="full-width"
+        >View all</a
+      >
+    </div>
+  </ng-template>
+
+  <!-- User menu -->
+  <button
+    type="button"
+    class="avatar-btn"
+    tuiDropdownAuto
+    [tuiDropdown]="userMenu"
+    [(tuiDropdownOpen)]="userMenuOpen"
+  >
+    <div tuiAvatar="AU" size="s" appearance="accent"></div>
+  </button>
+  <ng-template #userMenu>
+    <tui-data-list>
+      <div class="user-info">
+        <strong>{{ user.name }}</strong>
+        <span class="muted">{{ user.email }}</span>
+      </div>
+      <tui-opt-group>
+        <a tuiOption iconStart="@tui.user" routerLink="/profile">My profile</a>
+        <a tuiOption iconStart="@tui.bell-ring" routerLink="/notifications/preferences"
+          >Notification preferences</a
+        >
+      </tui-opt-group>
+      <tui-opt-group>
+        <a tuiOption iconStart="@tui.log-out" routerLink="/login">Logout</a>
+      </tui-opt-group>
+    </tui-data-list>
+  </ng-template>
+</header>
+
+<div class="body">
+  <aside [tuiNavigationAside]="expanded()" [attr.tuiTheme]="theme()">
+    <a tuiAsideItem iconStart="@tui.layout-dashboard" routerLink="/dashboard">Dashboard</a>
+
+    @for (group of nav; track group.label) {
+      <tui-aside-group [open]="true">
+        <button tuiAsideItem tuiChevron type="button" [iconStart]="group.icon">
+          {{ group.label }}
+          <ng-template>
+            @for (item of group.items; track item.link) {
+              <a tuiAsideItem [iconStart]="item.icon" [routerLink]="item.link">{{ item.label }}</a>
+            }
+          </ng-template>
+        </button>
+      </tui-aside-group>
+    }
+
+    <footer>
+      <a tuiAsideItem iconStart="@tui.bell" routerLink="/notifications">Notifications</a>
+      <button
+        tuiAsideItem
+        type="button"
+        [iconStart]="expanded() ? '@tui.chevron-left' : '@tui.chevron-right'"
+        (click)="expanded.set(!expanded())"
+      >
+        {{ expanded() ? 'Collapse' : 'Expand' }}
+      </button>
+    </footer>
+  </aside>
+
+  <main tuiNavigationMain>
+    <router-outlet />
+  </main>
+</div>

@@ -1,0 +1,107 @@
+<div class="page">
+  <app-page-header
+    [heading]="mode() === 'edit' ? 'Edit endpoint' : 'New endpoint'"
+    [breadcrumbs]="[
+      { label: 'Administration' },
+      { label: 'Webhooks', link: '/webhooks' },
+      { label: mode() === 'edit' ? 'Edit' : 'New' },
+    ]"
+  >
+    @if (mode() === 'edit') {
+      <a tuiButton appearance="secondary" size="m" iconStart="@tui.list" routerLink="../deliveries"
+        >Deliveries</a
+      >
+      <button tuiButton appearance="secondary" size="m" iconStart="@tui.send" type="button">
+        Send test
+      </button>
+      <button
+        tuiButton
+        appearance="secondary"
+        size="m"
+        iconStart="@tui.refresh-cw"
+        type="button"
+        (click)="rotateOpen.set(true)"
+      >
+        Rotate secret
+      </button>
+    }
+  </app-page-header>
+
+  <form tuiCardLarge appearance="outline-grayscale" tuiForm="m" [formGroup]="form">
+    <tui-textfield iconStart="@tui.link">
+      <label tuiLabel>Endpoint URL</label>
+      <input
+        tuiInput
+        formControlName="url"
+        type="url"
+        placeholder="https://hooks.example.com/erp"
+      />
+    </tui-textfield>
+    <span class="muted hint"
+      >Only HTTPS URLs are accepted. Private, loopback and link-local addresses are blocked.</span
+    >
+
+    <tui-textfield multi tuiChevron>
+      <label tuiLabel>Subscribed events</label>
+      <input tuiInputChip tuiSelectLike formControlName="eventTypes" />
+      <tui-input-chip *tuiItem />
+      <tui-data-list-wrapper *tuiDropdown tuiMultiSelectGroup [items]="events" />
+    </tui-textfield>
+
+    <label tuiLabel>
+      <input tuiSwitch type="checkbox" formControlName="enabled" />
+      Enabled
+    </label>
+
+    <footer>
+      <a tuiButton appearance="secondary" size="m" routerLink="/webhooks">Cancel</a>
+      <button tuiButton size="m" type="button" (click)="secretOpen.set(mode() !== 'edit')">
+        {{ mode() === 'edit' ? 'Update endpoint' : 'Register endpoint' }}
+      </button>
+    </footer>
+  </form>
+
+  <section tuiCardLarge appearance="outline-grayscale">
+    <header tuiHeader="h5">
+      <h3 tuiTitle>
+        Verifying deliveries
+        <span tuiSubtitle>Each request is signed with HMAC-SHA256</span>
+      </h3>
+    </header>
+    <pre class="code-block">
+X-Webhook-Id: evt_01J9K2...
+X-Webhook-Timestamp: 1760515200
+X-Webhook-Signature: sha256=5f2b...
+Idempotency-Key: evt_01J9K2...</pre>
+  </section>
+</div>
+
+<!-- Secret revealed once (UI preview) -->
+<ng-template
+  let-observer
+  [tuiDialogOptions]="{ size: 'm', label: 'Endpoint registered', dismissible: false }"
+  [(tuiDialog)]="secretOpen"
+>
+  <div tuiNotification appearance="warning">
+    <h3 tuiTitle>
+      Copy your signing secret now
+      <span tuiSubtitle>It will not be shown again.</span>
+    </h3>
+  </div>
+  <tui-textfield class="secret">
+    <label tuiLabel>Signing secret</label>
+    <input tuiInput [readOnly]="true" [value]="secret" />
+    <tui-icon tuiCopy />
+  </tui-textfield>
+  <footer class="dialog-footer">
+    <button tuiButton size="m" type="button" (click)="observer.complete()">I've saved it</button>
+  </footer>
+</ng-template>
+
+<app-confirm-dialog
+  [(open)]="rotateOpen"
+  heading="Rotate signing secret?"
+  confirmLabel="Rotate"
+  [danger]="false"
+  message="A new secret will be generated and shown once. Update your receiver before the old secret expires."
+/>

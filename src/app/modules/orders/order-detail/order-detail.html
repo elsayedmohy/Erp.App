@@ -1,0 +1,93 @@
+<div class="page">
+  <app-page-header
+    [heading]="'Order #' + order.id"
+    [subtitle]="order.customer + ' · ' + order.orderDate"
+    [breadcrumbs]="[
+      { label: 'Sales' },
+      { label: 'Orders', link: '/orders' },
+      { label: '#' + order.id },
+    ]"
+  >
+    <button
+      tuiButton
+      appearance="secondary"
+      size="m"
+      tuiChevron
+      type="button"
+      tuiDropdownAuto
+      [tuiDropdown]="statusMenu"
+    >
+      Update status
+    </button>
+    <ng-template #statusMenu>
+      <tui-data-list>
+        @for (s of statuses; track s) {
+          <button tuiOption type="button">{{ s }}</button>
+        }
+      </tui-data-list>
+    </ng-template>
+    <a
+      tuiButton
+      appearance="secondary"
+      size="m"
+      iconStart="@tui.pencil"
+      [routerLink]="['/orders', order.id, 'edit']"
+      >Edit</a
+    >
+    <button
+      tuiButton
+      appearance="destructive"
+      size="m"
+      iconStart="@tui.x"
+      type="button"
+      (click)="cancelOpen.set(true)"
+    >
+      Cancel order
+    </button>
+  </app-page-header>
+
+  <section tuiCardLarge appearance="outline-grayscale">
+    <tui-stepper [activeItemIndex]="step">
+      @for (s of statuses; track s; let i = $index) {
+        <button tuiStep type="button" [stepState]="i < step ? 'pass' : 'normal'">{{ s }}</button>
+      }
+    </tui-stepper>
+  </section>
+
+  <div class="grid-3">
+    <section tuiCardLarge appearance="outline-grayscale" class="span-2">
+      <header tuiHeader="h5"><h3 tuiTitle>Order lines</h3></header>
+      <app-line-items-editor
+        [items]="order.lines"
+        [products]="products"
+        [showDiscount]="true"
+        [total]="order.totalAmount"
+      />
+    </section>
+
+    <section tuiCardLarge appearance="outline-grayscale">
+      <header tuiHeader="h5"><h3 tuiTitle>Details</h3></header>
+      <dl class="dl">
+        <dt>Status</dt>
+        <dd><app-status-badge [status]="order.status" /></dd>
+        <dt>Customer</dt>
+        <dd>
+          <a tuiLink routerLink="/customers/1">{{ order.customer }}</a>
+        </dd>
+        <dt>Payment</dt>
+        <dd>{{ order.paymentMethod }}</dd>
+        <dt>Ship to</dt>
+        <dd>{{ order.shippingAddress }}</dd>
+        <dt>Invoice</dt>
+        <dd><a tuiLink routerLink="/invoices/2">INV-2026-0098</a></dd>
+      </dl>
+    </section>
+  </div>
+
+  <app-confirm-dialog
+    [(open)]="cancelOpen"
+    heading="Cancel order?"
+    confirmLabel="Cancel order"
+    message="Only orders in Pending status can be cancelled. This cannot be undone."
+  />
+</div>

@@ -1,0 +1,81 @@
+<div class="page">
+  <app-page-header
+    [heading]="mode() === 'edit' ? 'Edit product' : 'New product'"
+    [breadcrumbs]="[
+      { label: 'Inventory' },
+      { label: 'Products', link: '/products' },
+      { label: mode() === 'edit' ? 'Edit' : 'New' },
+    ]"
+  >
+    @if (mode() === 'edit') {
+      <a
+        tuiButton
+        appearance="secondary"
+        size="m"
+        iconStart="@tui.package-plus"
+        routerLink="../stock"
+        >Adjust stock</a
+      >
+    }
+  </app-page-header>
+
+  <form [formGroup]="form" class="grid-3">
+    <section tuiCardLarge appearance="outline-grayscale" tuiForm="m" class="span-2">
+      <header tuiHeader="h5"><h3 tuiTitle>Details</h3></header>
+      <div class="grid-2">
+        <tui-textfield>
+          <label tuiLabel>Name</label>
+          <input tuiInput formControlName="name" placeholder="Laptop Pro 15" />
+        </tui-textfield>
+        <tui-textfield>
+          <label tuiLabel>SKU</label>
+          <input tuiInput formControlName="sku" placeholder="LP-15-001" />
+        </tui-textfield>
+        <tui-textfield tuiChevron>
+          <label tuiLabel>Category</label>
+          <input tuiSelect formControlName="category" />
+          <tui-data-list-wrapper *tuiDropdown [items]="categories" />
+        </tui-textfield>
+      </div>
+
+      <header tuiHeader="h5"><h3 tuiTitle>Pricing &amp; stock</h3></header>
+      <div class="grid-2">
+        <tui-textfield>
+          <label tuiLabel>Unit price</label>
+          <input tuiInputNumber prefix="$ " formControlName="unitPrice" />
+        </tui-textfield>
+        <tui-textfield>
+          <label tuiLabel>Cost price</label>
+          <input tuiInputNumber prefix="$ " formControlName="costPrice" />
+        </tui-textfield>
+        <tui-textfield>
+          <label tuiLabel>Stock quantity</label>
+          <input tuiInputNumber formControlName="stockQuantity" />
+        </tui-textfield>
+        <tui-textfield>
+          <label tuiLabel>Reorder level</label>
+          <input tuiInputNumber formControlName="reorderLevel" />
+        </tui-textfield>
+      </div>
+
+      <footer>
+        <a tuiButton appearance="secondary" size="m" routerLink="/products">Cancel</a>
+        <button tuiButton size="m" type="button">
+          {{ mode() === 'edit' ? 'Update' : 'Save' }}
+        </button>
+      </footer>
+    </section>
+
+    <section tuiCardLarge appearance="outline-grayscale">
+      <header tuiHeader="h5">
+        <h3 tuiTitle>
+          Product image
+          <span tuiSubtitle>Optional</span>
+        </h3>
+      </header>
+      <label tuiInputFiles>
+        <input accept="image/*" tuiInputFiles formControlName="image" />
+      </label>
+    </section>
+  </form>
+</div>

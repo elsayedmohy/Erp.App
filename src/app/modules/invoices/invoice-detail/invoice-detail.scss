@@ -1,0 +1,46 @@
+.sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sheet__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.sheet__title {
+  margin: 0;
+  font: var(--tui-typography-heading-h4);
+}
+
+.block {
+  margin: 0.25rem 0 0.75rem;
+}
+
+.amount {
+  margin: 0.25rem 0 0;
+  font: var(--tui-typography-heading-h4);
+}
+
+.num {
+  text-align: end;
+}
+
+.totals {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.25rem 2rem;
+  justify-content: end;
+  margin: 0;
+  text-align: end;
+
+  dt {
+    color: var(--tui-text-secondary);
+  }
+
+  dd {
+    margin: 0;
+  }
+}

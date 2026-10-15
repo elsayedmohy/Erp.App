@@ -1,0 +1,114 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--tui-background-base);
+  color: var(--tui-text-primary);
+
+  // Taiga navigation paints header/aside with --tui-theme-color (black by default).
+  // In light mode use the light alt surface so the shell matches the theme.
+  &:not([tuiTheme='dark']) {
+    --tui-theme-color: var(--tui-background-base-alt);
+  }
+}
+
+tui-root {
+  min-height: 100%;
+}
+
+/* Shared page helpers */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-block: 1rem 2rem;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.span-2 {
+  grid-column: span 2;
+
+  @media (max-width: 1024px) {
+    grid-column: auto;
+  }
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.full-width {
+  inline-size: 100%;
+}
+
+.muted {
+  color: var(--tui-text-secondary);
+}
+
+.dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.75rem 1.5rem;
+  margin: 0;
+
+  dt {
+    color: var(--tui-text-secondary);
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.code-block {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--tui-background-neutral-1);
+  font: var(--tui-typography-body-s);
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+
+.inline-link {
+  display: inline-flex;
+  margin-block-start: 0.5rem;
+  font: var(--tui-typography-body-s);
+}
+
+.hint {
+  margin-block-start: -0.5rem;
+  font: var(--tui-typography-body-s);
+}
+
+.secret {
+  margin-block: 1rem;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

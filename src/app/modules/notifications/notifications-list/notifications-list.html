@@ -1,0 +1,64 @@
+<div class="page">
+  <app-page-header
+    heading="Notifications"
+    subtitle="3 unread"
+    [breadcrumbs]="[{ label: 'Home', link: '/dashboard' }, { label: 'Notifications' }]"
+  >
+    <a tuiButton appearance="secondary" size="m" iconStart="@tui.settings" routerLink="preferences"
+      >Preferences</a
+    >
+    <button tuiButton appearance="secondary" size="m" iconStart="@tui.check-check" type="button">
+      Mark selected as read
+    </button>
+  </app-page-header>
+
+  <div class="toolbar">
+    <label tuiLabel>
+      <input tuiCheckbox type="checkbox" />
+      Select all
+    </label>
+    <tui-segmented size="s">
+      <button type="button">All</button>
+      <button type="button">Unread</button>
+    </tui-segmented>
+  </div>
+
+  <section class="list">
+    @for (n of notifications; track n.id) {
+      <div class="item" [class.item_unread]="!n.read">
+        <input tuiCheckbox type="checkbox" />
+        <div
+          tuiAvatar
+          size="s"
+          [appearance]="n.read ? 'secondary' : 'accent'"
+          [tuiAvatar]="icons[n.type] ?? '@tui.bell'"
+        ></div>
+        <span tuiTitle class="grow">
+          {{ n.title }}
+          <span tuiSubtitle>{{ n.body }}</span>
+        </span>
+        <span class="muted time">{{ n.createdAt }}</span>
+        @if (!n.read) {
+          <button
+            tuiIconButton
+            appearance="flat-grayscale"
+            size="xs"
+            iconStart="@tui.check"
+            tuiHint="Mark as read"
+            type="button"
+          >
+            Mark as read
+          </button>
+        }
+      </div>
+    } @empty {
+      <app-empty-state
+        icon="@tui.bell-off"
+        heading="You're all caught up"
+        message="New notifications will appear here."
+      />
+    }
+  </section>
+
+  <tui-table-pagination [total]="notifications.length" />
+</div>

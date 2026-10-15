@@ -1,0 +1,129 @@
+<div class="page">
+  <app-page-header
+    heading="Dashboard"
+    subtitle="Overview of sales, inventory, finance and project work"
+  >
+    <tui-segmented size="s">
+      <button type="button">7 days</button>
+      <button type="button">30 days</button>
+      <button type="button">12 months</button>
+    </tui-segmented>
+  </app-page-header>
+
+  <div class="stats">
+    @for (stat of stats; track stat.label) {
+      <app-stat-card
+        [label]="stat.label"
+        [value]="stat.value"
+        [icon]="stat.icon"
+        [trend]="stat.trend"
+        [positive]="stat.positive"
+      />
+    }
+  </div>
+
+  <div class="grid-3">
+    <section tuiCardLarge appearance="outline-grayscale" class="span-2">
+      <header tuiHeader="h5">
+        <h3 tuiTitle>
+          Sales
+          <span tuiSubtitle>Revenue in thousands, last 12 months</span>
+        </h3>
+        <a tuiAccessories tuiButton appearance="flat" size="s" routerLink="/reports/sales"
+          >Full report</a
+        >
+      </header>
+      <tui-axes
+        class="chart"
+        [axisXLabels]="salesLabels"
+        [axisYLabels]="['0', '50k', '100k']"
+        [horizontalLines]="2"
+        [verticalLines]="11"
+      >
+        <tui-line-chart
+          [value]="sales"
+          [x]="0"
+          [y]="0"
+          [width]="11"
+          [height]="100"
+          [smoothingFactor]="40"
+          [filled]="true"
+        />
+      </tui-axes>
+    </section>
+
+    <section tuiCardLarge appearance="outline-grayscale">
+      <header tuiHeader="h5">
+        <h3 tuiTitle>
+          Invoices by status
+          <span tuiSubtitle>Current quarter</span>
+        </h3>
+      </header>
+      <div class="ring">
+        <tui-ring-chart size="m" [value]="invoicesByStatus.values" />
+        <ul class="legend">
+          @for (label of invoicesByStatus.labels; track label; let i = $index) {
+            <li>
+              <span
+                class="dot"
+                [style.background]="'var(--tui-chart-categorical-0' + i + ')'"
+              ></span>
+              {{ label }} <strong>{{ invoicesByStatus.values[i] }}</strong>
+            </li>
+          }
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <div class="grid-2">
+    <section tuiCardLarge appearance="outline-grayscale">
+      <header tuiHeader="h5">
+        <h3 tuiTitle>
+          Tasks by status
+          <span tuiSubtitle>All active projects</span>
+        </h3>
+        <a tuiAccessories tuiButton appearance="flat" size="s" routerLink="/reports/tasks"
+          >Task report</a
+        >
+      </header>
+      <tui-axes
+        class="chart"
+        [axisXLabels]="tasksByStatus.labels"
+        [axisYLabels]="['0', '25']"
+        [horizontalLines]="1"
+      >
+        <tui-bar-chart [max]="25" [value]="tasksByStatus.values" />
+      </tui-axes>
+    </section>
+
+    <section tuiCardLarge appearance="outline-grayscale">
+      <header tuiHeader="h5">
+        <h3 tuiTitle>Low stock</h3>
+        <a tuiAccessories tuiButton appearance="flat" size="s" routerLink="/reports/inventory"
+          >Inventory report</a
+        >
+      </header>
+      <app-data-table
+        [columns]="stockColumns"
+        [rows]="lowStock"
+        baseRoute="/products"
+        [actions]="[]"
+        [extraActions]="[{ icon: '@tui.package-plus', label: 'Adjust stock', path: 'stock' }]"
+      />
+    </section>
+  </div>
+
+  <section tuiCardLarge appearance="outline-grayscale">
+    <header tuiHeader="h5">
+      <h3 tuiTitle>Recent orders</h3>
+      <a tuiAccessories tuiButton appearance="flat" size="s" routerLink="/orders">View all</a>
+    </header>
+    <app-data-table
+      [columns]="orderColumns"
+      [rows]="recentOrders"
+      baseRoute="/orders"
+      [actions]="['view']"
+    />
+  </section>
+</div>

@@ -1,0 +1,72 @@
+<div class="page">
+  <app-page-header
+    [heading]="mode() === 'edit' ? 'Edit order' : 'New order'"
+    [breadcrumbs]="[
+      { label: 'Sales' },
+      { label: 'Orders', link: '/orders' },
+      { label: mode() === 'edit' ? 'Edit' : 'New' },
+    ]"
+  />
+
+  <form tuiCardLarge appearance="outline-grayscale" tuiForm="m" [formGroup]="form">
+    <header tuiHeader="h5"><h3 tuiTitle>Customer</h3></header>
+    <div class="grid-2">
+      <div>
+        <tui-textfield tuiChevron>
+          <label tuiLabel>Customer</label>
+          <input tuiComboBox formControlName="customer" />
+          <tui-data-list-wrapper *tuiDropdown [items]="customers | tuiFilterByInput" />
+        </tui-textfield>
+        <a tuiLink routerLink="/customers/new" iconStart="@tui.plus" class="inline-link"
+          >Create a new customer</a
+        >
+      </div>
+      <tui-textfield>
+        <label tuiLabel>Order date</label>
+        <input tuiInputDate formControlName="orderDate" />
+        <tui-calendar *tuiDropdown />
+      </tui-textfield>
+    </div>
+
+    <header tuiHeader="h5">
+      <h3 tuiTitle>
+        Order lines
+        <span tuiSubtitle>Unit price auto-fills from the selected product</span>
+      </h3>
+    </header>
+    <app-line-items-editor
+      [items]="lines"
+      [products]="products"
+      [showDiscount]="true"
+      [total]="total"
+    />
+
+    <header tuiHeader="h5"><h3 tuiTitle>Payment &amp; shipping</h3></header>
+    <div class="grid-2">
+      <tui-textfield tuiChevron>
+        <label tuiLabel>Payment method</label>
+        <input tuiSelect formControlName="paymentMethod" />
+        <tui-data-list-wrapper *tuiDropdown [items]="paymentMethods" />
+      </tui-textfield>
+      <tui-textfield>
+        <label tuiLabel>Shipping address</label>
+        <input
+          tuiInput
+          formControlName="shippingAddress"
+          placeholder="123 Main St, New York, USA"
+        />
+      </tui-textfield>
+    </div>
+
+    <div tuiNotification appearance="info" size="s">
+      An invoice is created automatically when the order is placed.
+    </div>
+
+    <footer>
+      <a tuiButton appearance="secondary" size="m" routerLink="/orders">Cancel</a>
+      <button tuiButton size="m" type="button">
+        {{ mode() === 'edit' ? 'Update order' : 'Place order' }}
+      </button>
+    </footer>
+  </form>
+</div>

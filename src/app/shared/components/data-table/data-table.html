@@ -1,0 +1,160 @@
+<div class="table-wrap">
+  <table tuiTable size="m" class="table">
+    <thead>
+      <tr>
+        @if (selectable()) {
+          <th tuiTh class="narrow"><input tuiCheckbox type="checkbox" size="s" /></th>
+        }
+        @for (col of columns(); track col.key) {
+          <th
+            tuiTh
+            [class.num]="col.type === 'money' || col.type === 'number' || col.type === 'stock'"
+          >
+            {{ col.label }}
+          </th>
+        }
+        @if (actions().length || extraActions().length) {
+          <th tuiTh class="actions-col"></th>
+        }
+      </tr>
+    </thead>
+    <tbody tuiTbody>
+      @for (row of rows(); track $index) {
+        <tr>
+          @if (selectable()) {
+            <td tuiTd class="narrow"><input tuiCheckbox type="checkbox" size="s" /></td>
+          }
+          @for (col of columns(); track col.key) {
+            @let value = cell(row, col.key);
+            <td
+              tuiTd
+              [class.num]="col.type === 'money' || col.type === 'number' || col.type === 'stock'"
+            >
+              @switch (col.type) {
+                @case ('strong') {
+                  <strong>{{ value }}</strong>
+                }
+                @case ('money') {
+                  $ {{ value | number: '1.2-2' }}
+                }
+                @case ('number') {
+                  {{ value | number }}
+                }
+                @case ('badge') {
+                  <app-status-badge [status]="value" size="s" />
+                }
+                @case ('person') {
+                  <div tuiCell size="s">
+                    <div tuiAvatar size="xs" appearance="secondary">{{ value?.[0] }}</div>
+                    <span>{{ value }}</span>
+                  </div>
+                }
+                @case ('tags') {
+                  <div class="tags">
+                    @for (tag of value; track tag) {
+                      <span tuiChip size="xxs" appearance="neutral">{{ tag }}</span>
+                    }
+                  </div>
+                }
+                @case ('bool') {
+                  <app-status-badge [status]="value ? 'Enabled' : 'Disabled'" size="s" />
+                }
+                @case ('stock') {
+                  @if (value <= cell(row, 'reorderLevel')) {
+                    <span tuiBadge tuiStatus appearance="negative" size="s">{{ value }} · Low</span>
+                  } @else {
+                    {{ value }}
+                  }
+                }
+                @case ('progress') {
+                  <div class="progress">
+                    <progress tuiProgressBar size="xs" max="100" [value]="value"></progress>
+                    <span class="muted">{{ value }}%</span>
+                  </div>
+                }
+                @case ('mono') {
+                  <code>{{ value }}</code>
+                }
+                @default {
+                  {{ value }}
+                }
+              }
+            </td>
+          }
+          @if (actions().length || extraActions().length) {
+            @let id = cell(row, 'id');
+            <td tuiTd class="actions-col">
+              <div class="row-actions">
+                @for (extra of extraActions(); track extra.path) {
+                  <a
+                    tuiIconButton
+                    appearance="flat-grayscale"
+                    size="xs"
+                    [iconStart]="extra.icon"
+                    [tuiHint]="extra.label"
+                    [routerLink]="[baseRoute(), id, extra.path]"
+                    >{{ extra.label }}</a
+                  >
+                }
+                @if (actions().includes('view')) {
+                  <a
+                    tuiIconButton
+                    appearance="flat-grayscale"
+                    size="xs"
+                    iconStart="@tui.eye"
+                    tuiHint="View"
+                    [routerLink]="[baseRoute(), id]"
+                    >View</a
+                  >
+                }
+                @if (actions().includes('edit')) {
+                  <a
+                    tuiIconButton
+                    appearance="flat-grayscale"
+                    size="xs"
+                    iconStart="@tui.pencil"
+                    tuiHint="Edit"
+                    [routerLink]="[baseRoute(), id, 'edit']"
+                    >Edit</a
+                  >
+                }
+                @if (actions().includes('delete')) {
+                  <button
+                    tuiIconButton
+                    appearance="flat-destructive"
+                    size="xs"
+                    iconStart="@tui.trash-2"
+                    tuiHint="Delete"
+                    type="button"
+                    (click)="confirmOpen.set(true)"
+                  >
+                    Delete
+                  </button>
+                }
+              </div>
+            </td>
+          }
+        </tr>
+      } @empty {
+        <tr>
+          <td tuiTd [attr.colspan]="columns().length + 2">
+            <app-empty-state
+              heading="No records found"
+              message="Try changing the filters or create a new record."
+            />
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<tui-table-pagination
+  class="pagination"
+  [page]="page()"
+  [size]="size()"
+  [total]="total() ?? rows().length"
+  (paginationChange)="page.set($event.page); size.set($event.size)"
+/>
+
+<app-confirm-dialog [(open)]="confirmOpen" heading="Delete record?" [message]="deleteMessage()" />

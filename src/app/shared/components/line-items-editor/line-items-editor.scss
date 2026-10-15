@@ -1,0 +1,44 @@
+.table {
+  inline-size: 100%;
+}
+
+.qty {
+  inline-size: 8rem;
+}
+
+.price {
+  inline-size: 10rem;
+}
+
+.num {
+  text-align: end;
+  white-space: nowrap;
+}
+
+.narrow {
+  inline-size: 2.5rem;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-block-start: 1rem;
+}
+
+.totals {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.25rem 2rem;
+  margin: 0;
+  text-align: end;
+
+  dt {
+    color: var(--tui-text-secondary);
+  }
+
+  dd {
+    margin: 0;
+  }
+}

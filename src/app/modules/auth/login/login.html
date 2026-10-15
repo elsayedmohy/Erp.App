@@ -1,0 +1,31 @@
+<form tuiCardLarge appearance="floating" tuiForm="l" [formGroup]="form">
+  <header tuiHeader>
+    <h2 tuiTitle>
+      Sign in
+      <span tuiSubtitle>Use your company account to continue</span>
+    </h2>
+  </header>
+
+  <tui-textfield iconStart="@tui.mail">
+    <label tuiLabel>Email</label>
+    <input tuiInput formControlName="email" type="email" placeholder="admin@company.com" />
+  </tui-textfield>
+
+  <tui-textfield iconStart="@tui.lock">
+    <label tuiLabel>Password</label>
+    <input tuiInput formControlName="password" type="password" />
+    <tui-icon tuiPassword />
+  </tui-textfield>
+
+  <div class="row">
+    <label tuiLabel>
+      <input tuiCheckbox type="checkbox" formControlName="remember" />
+      Remember me
+    </label>
+    <a tuiLink>Forgot password?</a>
+  </div>
+
+  <footer>
+    <a tuiButton routerLink="/dashboard" class="full-width">Sign in</a>
+  </footer>
+</form>
