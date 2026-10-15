@@ -19,16 +19,15 @@ import type {
   Project,
   ProjectMember,
   PurchaseOrder,
-  Role,
   SalesOrder,
   StatItem,
   Supplier,
   Task,
   TaskComment,
-  User,
   WebhookDelivery,
   WebhookEndpoint,
 } from '../core/models';
+import { Role, User } from '@core/auth/auth.models';
 
 // ---------- Lookups (dropdown options) ----------
 export const MOCK_ROLE_NAMES = ['Admin', 'Manager', 'InventoryManager', 'Accountant', 'Employee'];

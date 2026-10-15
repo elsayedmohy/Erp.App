@@ -1,4 +1,4 @@
-<form tuiCardLarge appearance="floating" tuiForm="l" [formGroup]="form">
+<form [formGroup]="form" novalidate (submit)="submit()" tuiCardLarge appearance="floating" tuiForm="l" >
   <header tuiHeader>
     <h2 tuiTitle>
       Sign in
@@ -22,10 +22,10 @@
       <input tuiCheckbox type="checkbox" formControlName="remember" />
       Remember me
     </label>
-    <a tuiLink>Forgot password?</a>
+<!--    <a tuiLink>Forgot password?</a>-->
   </div>
 
   <footer>
-    <a tuiButton routerLink="/dashboard" class="full-width">Sign in</a>
+    <button tuiButton   class="full-width">Sign in</button>
   </footer>
 </form>

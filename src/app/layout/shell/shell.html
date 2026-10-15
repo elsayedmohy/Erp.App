@@ -73,10 +73,13 @@
   </button>
   <ng-template #userMenu>
     <tui-data-list>
-      <div class="user-info">
-        <strong>{{ user.name }}</strong>
-        <span class="muted">{{ user.email }}</span>
-      </div>
+      @if (profile(); as p) {
+        <div class="user-info">
+          <strong>{{ p.firstName + p.lastName }}</strong>
+          <span class="muted">{{ p.email}}</span>
+        </div>
+      }
+
       <tui-opt-group>
         <a tuiOption iconStart="@tui.user" routerLink="/profile">My profile</a>
         <a tuiOption iconStart="@tui.bell-ring" routerLink="/notifications/preferences"

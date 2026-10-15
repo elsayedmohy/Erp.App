@@ -21,7 +21,7 @@ export const routes: Routes = [
       },
       {
         path: 'profile',
-        loadComponent: () => import('./modules/auth/profile/profile').then((m) => m.Profile),
+        loadComponent: () => import('./modules/profile/profile').then((m) => m.Profile),
       },
       // Level 1
       { path: 'users', loadChildren: () => import('./modules/users/users.routes') },

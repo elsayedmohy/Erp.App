@@ -1,19 +1,7 @@
-// Shape-only interfaces used by the UI. These mirror the schema in LEVEL1–3.md.
-
 // Level 1
-export interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: string;
-}
-export interface Role {
-  id: number;
-  name: string;
-  permissions: string[];
-  usersCount: number;
-}
+
+
+
 export interface Customer {
   id: number;
   name: string;

@@ -4,6 +4,8 @@ import { TUI_DARK_MODE } from '@taiga-ui/core';
 import { TuiNavigation } from '@taiga-ui/layout';
 import { MOCK_CURRENT_USER, MOCK_NOTIFICATIONS } from '@mock/mock-data';
 import { UI } from '@shared/ui';
+import { TokenService } from '@core/auth/token.service';
+import { ProfileService } from '../../modules/profile/data/profile.service';
 
 interface NavItem {
   label: string;
@@ -27,10 +29,9 @@ export class Shell {
   protected readonly darkMode = inject(TUI_DARK_MODE);
   protected readonly theme = computed(() => (this.darkMode() ? 'dark' : 'light'));
   protected readonly expanded = signal(true);
-  protected readonly notificationsOpen = signal(false);
-  protected readonly userMenuOpen = signal(false);
+  protected notificationsOpen = signal(false);
+  protected userMenuOpen = signal(false);
 
-  protected readonly user = MOCK_CURRENT_USER;
   protected readonly notifications = MOCK_NOTIFICATIONS.slice(0, 5);
 
   protected readonly nav: NavGroup[] = [
@@ -95,4 +96,12 @@ export class Shell {
       ],
     },
   ];
+  private readonly tokenService = inject(TokenService);
+  protected readonly profile = inject(ProfileService).profile;
+  private readonly profileService = inject(ProfileService);
+  constructor() {
+    if (this.tokenService.isAuthenticated()) {
+      this.profileService.load();
+    }
+  }
 }
