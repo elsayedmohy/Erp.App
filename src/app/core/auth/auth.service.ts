@@ -39,7 +39,7 @@ export class AuthService {
     email: string,
     initialName = '',
   ): Observable<AuthResponse> {
-    this.tokenService.save(response.token, response.RefreshToken);
+    this.tokenService.save(response.token, response.refreshToken);
     return of(response);
   }
 }

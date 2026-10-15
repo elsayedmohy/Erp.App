@@ -5,7 +5,7 @@ export interface LoginRequest {
 
 export interface AuthResponse {
   token: string;
-  RefreshToken: string;
+  refreshToken: string;
   expiresAt: Date;
 }
 
