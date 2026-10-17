@@ -20,12 +20,21 @@ export function requiredText(maxLength: number, ...validators: ValidatorFn[]): F
   });
 }
 
+export function strongPassword(c: AbstractControl): ValidationErrors | null {
+  const v = c.value as string;
+  if (!v) return null;
+  return /[a-z]/.test(v) && /[A-Z]/.test(v) && /\d/.test(v) && /[^a-zA-Z\d]/.test(v)
+    ? null
+    : { weakPassword: true };
+}
+
 
 const MESSAGES: Record<string, (e: any) => string> = {
   required: () => 'This field is required.',
   email: () => 'Enter a valid email address.',
   minlength: (e) => `Minimum ${e.requiredLength} characters.`,
   maxlength: (e) => `Maximum ${e.requiredLength} characters.`,
+  weakPassword: () => 'Use upper and lower case letters, a number and a symbol.',
   min: (e) => `Must be at least ${e.min}.`,
   max: (e) => `Must be at most ${e.max}.`,
   pattern: () => 'Invalid format.',

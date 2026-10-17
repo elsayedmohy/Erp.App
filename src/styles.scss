@@ -112,3 +112,11 @@ tui-root {
   justify-content: flex-end;
   gap: 0.5rem;
 }
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.field_wide {
+  grid-column: 1 / -1;
+}
