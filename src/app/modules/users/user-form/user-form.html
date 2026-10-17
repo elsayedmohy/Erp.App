@@ -1,0 +1,75 @@
+@let s = state;
+<div class="page">
+  <app-page-header
+    [heading]="s.isEdit()  ? 'Edit user' : 'New user'"
+    [breadcrumbs]="[
+          { label: 'Administration' },
+          { label: 'Users', link: '/users' },
+          { label: s.isEdit()  ?  'Edit' : 'New' },
+        ]"
+  />
+@if (s.loadError()) {
+  <app-error-state heading="Couldn't load customer" [message]="s.loadError()!" [retryable]="false">
+    <a tuiButton size="s" appearance="secondary" routerLink="/users">Back to users</a>
+  </app-error-state>
+} @else if (s.loading()) {
+  <page-loader />
+} @else {
+  <form tuiCardLarge appearance="outline-grayscale" tuiForm="m" [formGroup]="form" (ngSubmit)="s.submit()">
+    @if (s.formError()) {
+      <div tuiNotification appearance="negative" size="m">{{ s.formError() }}</div>
+    }
+
+    <div class="grid-2">
+      @for (f of visibleFields(); track f.key) {
+        <div class="field" [class.field_wide]="f.wide">
+          <tui-textfield>
+            <label tuiLabel>{{ f.label }}</label>
+            <input tuiInput [formControlName]="f.key" [type]="f.type ?? 'text'"
+                   [placeholder]="f.placeholder" [attr.maxlength]="f.max" />
+          </tui-textfield>
+          @if (f.lockedOnEdit && state.isEdit()) {
+            <small class="muted">Can't be changed after creation.</small>
+          }
+          <app-field-error [control]="form.controls[f.key]" />
+        </div>
+      }
+
+      <div class="field" >
+        <tui-textfield
+          tuiChevron
+          [stringify]="stringify"
+        >
+          <label tuiLabel>Role</label>
+          <input
+            tuiSelect
+            formControlName="roleId"
+          />
+
+          <tui-data-list *tuiDropdown>
+            @for (role of roles(); track role.id) {
+              <button
+                tuiOption
+                type="button"
+                [value]="role.id"
+              >
+                {{ role.name }}
+              </button>
+            }
+          </tui-data-list>
+        </tui-textfield>
+
+        <app-field-error [control]="form.controls.roleId" />
+      </div>
+    </div>
+
+    <footer>
+      <a tuiButton appearance="secondary" size="m"
+         [routerLink]="s.isEdit() ? ['/users', id()] : '/users'">Cancel</a>
+      <button tuiButton size="m" type="submit" [disabled]="s.saving()">
+        {{ s.saving() ? 'Saving…' : s.isEdit() ? 'Update' : 'Save' }}
+      </button>
+    </footer>
+  </form>
+}
+</div>

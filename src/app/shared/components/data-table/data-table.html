@@ -25,7 +25,7 @@
             <td tuiTd class="narrow"><input tuiCheckbox type="checkbox" size="s" /></td>
           }
           @for (col of columns(); track col.key) {
-            @let value = cell(row, col.key);
+            @let value = cell(row, col);
             <td
               tuiTd
               [class.num]="col.type === 'money' || col.type === 'number' || col.type === 'stock'"
@@ -60,7 +60,7 @@
                   <app-status-badge [status]="value ? 'Enabled' : 'Disabled'" size="s" />
                 }
                 @case ('stock') {
-                  @if (value <= cell(row, 'reorderLevel')) {
+                  @if (value <= prop(row, 'reorderLevel')) {
                     <span tuiBadge tuiStatus appearance="negative" size="s">{{ value }} · Low</span>
                   } @else {
                     {{ value }}
@@ -82,7 +82,7 @@
             </td>
           }
           @if (actions().length || extraActions().length) {
-            @let id = cell(row, 'id');
+            @let id = prop(row, 'id');
             <td tuiTd class="actions-col">
               <div class="row-actions">
                 @for (extra of extraActions(); track extra.path) {

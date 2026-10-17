@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import {
   MOCK_AUTOMATION_ACTIONS,
   MOCK_AUTOMATION_TRIGGERS,
-  MOCK_ROLE_NAMES,
+  ROLE_NAMES,
   MOCK_USERS,
 } from '@mock/mock-data';
 import { PageHeader } from '@shared/components/page-header/page-header';
@@ -86,7 +86,7 @@ export class RuleForm {
   readonly mode = input<'create' | 'edit'>('create');
   protected readonly triggers = MOCK_AUTOMATION_TRIGGERS;
   protected readonly actions = MOCK_AUTOMATION_ACTIONS;
-  protected readonly roles = MOCK_ROLE_NAMES;
+  protected readonly roles = ROLE_NAMES;
   protected readonly users = MOCK_USERS.map((u) => `${u.firstName} ${u.lastName}`);
   protected readonly form = new FormGroup({
     name: new FormControl(''),

@@ -30,7 +30,7 @@ import { Role, User } from '@core/auth/auth.models';
 import { Customer } from '../modules/customers/data/model';
 
 // ---------- Lookups (dropdown options) ----------
-export const MOCK_ROLE_NAMES = ['Admin', 'Manager', 'InventoryManager', 'Accountant', 'Employee'];
+export const ROLE_NAMES = ['Admin', 'Manager', 'InventoryManager', 'Accountant', 'Employee'];
 export const MOCK_PAYMENT_TERMS = ['Net 15', 'Net 30', 'Net 60', 'Due on receipt'];
 export const MOCK_PAYMENT_METHODS = ['CreditCard', 'BankTransfer', 'Cash', 'Cheque'];
 export const MOCK_TAX_RATES = ['0%', '5%', '10%', '14%'];

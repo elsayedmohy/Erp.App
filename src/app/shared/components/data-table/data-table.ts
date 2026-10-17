@@ -17,10 +17,11 @@ export type ColumnType =
   | 'stock'
   | 'progress';
 
-export interface Column {
+export interface Column<T = any> {
   key: string;
   label: string;
   type?: ColumnType;
+  value?: (row: T) => unknown;
 }
 
 export type RowAction = 'view' | 'edit' | 'delete';
@@ -54,7 +55,11 @@ export class DataTable {
   readonly total = input<number | null>(null);
   readonly pageChange = output<{ page: number; pageSize: number }>();
 
-  protected cell(row: object, key: string): any {
+  protected cell(row: object, col: Column): any {
+    return col.value ? col.value(row) : (row as Record<string, unknown>)[col.key];
+  }
+
+  protected prop(row: object, key: string): any {
     return (row as Record<string, unknown>)[key];
   }
 

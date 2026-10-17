@@ -1,0 +1,72 @@
+<div class="page">
+  <app-page-header
+    heading="Users"
+    [breadcrumbs]="[{ label: 'Administration' }, { label: 'Users' }]"
+  >
+    <a tuiButton appearance="floating" size="m" iconStart="@tui.shield" routerLink="roles"
+    >Manage roles</a
+    >
+    <a tuiButton size="m" iconStart="@tui.plus" routerLink="new">New user</a>
+  </app-page-header>
+
+  <app-filter-bar
+    placeholder="Search by name or email"
+    [value]="query().search ?? ''"
+    (search)="onSearch($event)"
+  />
+
+  @let s = users;
+
+  @if (s.initialLoading()) {
+    <app-table-skeleton [columns]="columns" [rows]="query().pageSize" />
+  } @else if (s.error() && !s.data()) {
+    <app-error-state [message]="s.error()!" (retry)="s.reload()" />
+  } @else if (s.data(); as page) {
+    @if (s.error()) {
+      <div tuiNotification appearance="negative" size="m" class="inline-error">
+        {{ s.error() }}
+        <button tuiLink type="button" (click)="s.reload()">Retry</button>
+      </div>
+    }
+
+    @if (page.total === 0) {
+      @if (query().search) {
+        <app-empty-state
+          icon="@tui.search-x"
+          heading="No matching customers"
+          [message]="'Nothing matches “' + query().search + '”.'"
+        >
+          <button
+            tuiButton
+            type="button"
+            size="s"
+            appearance="secondary"
+            (click)="onSearch('')"
+          >
+            Clear search
+          </button>
+        </app-empty-state>
+      } @else {
+        <app-empty-state
+          icon="@tui.contact"
+          heading="No customers yet"
+          message="Create your first customer to start taking orders."
+        >
+          <a tuiButton size="s" iconStart="@tui.plus" routerLink="new">New customer</a>
+        </app-empty-state>
+      }
+    } @else {
+      <app-data-table
+        [class.refreshing]="s.loading()"
+        [columns]="columns"
+        [rows]="page.items"
+        [page]="page.page"
+        [pageSize]="page.pageSize"
+        [total]="page.total"
+        (deleteRow)="onDelete($event)"
+        (pageChange)="onPage($event)"
+        baseRoute="/users"
+      />
+    }
+  }
+</div>
