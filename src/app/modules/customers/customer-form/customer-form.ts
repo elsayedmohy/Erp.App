@@ -18,6 +18,9 @@ import { PageLoader } from '@shared/components/page-loader/page-loader';
 import { UI } from '@shared/ui';
 import { CustomersService } from '../data/customers.service';
 import { CustomerRequest } from '../data/model';
+import { requiredText } from '@shared/forms/form-utils';
+import { entityForm } from '@shared/forms/entity-form';
+import { FieldError } from '@shared/forms/field-error';
 
 type Field = keyof CustomerRequest;
 
@@ -35,7 +38,7 @@ const MESSAGES: Record<string, (e: any) => string> = {
 
 @Component({
   selector: 'app-customer-form',
-  imports: [...UI, PageHeader, PageLoader, ErrorState, TuiError],
+  imports: [...UI, PageHeader, PageLoader, ErrorState, FieldError],
   templateUrl: './customer-form.html',
   styles: `
     .field {
@@ -62,7 +65,7 @@ export class CustomerForm {
   protected readonly formError = signal<string | null>(null);
 
   protected readonly fields: {
-    key: Field;
+    key: keyof CustomerRequest;
     label: string;
     placeholder: string;
     type?: string;
@@ -79,114 +82,24 @@ export class CustomerForm {
   ];
 
   protected readonly form = new FormGroup({
-    name: new FormControl('', {
-      nonNullable: true,
-      validators: [notBlank, Validators.maxLength(200)],
-    }),
-    email: new FormControl('', {
-      nonNullable: true,
-      validators: [notBlank, Validators.email, Validators.maxLength(256)],
-    }),
-    phoneNumber: new FormControl('', {
-      nonNullable: true,
-      validators: [notBlank, Validators.maxLength(20), Validators.pattern(/^\+?[0-9\s-]{7,20}$/)],
-    }),
-    taxId: new FormControl('', {
-      nonNullable: true,
-      validators: [notBlank, Validators.maxLength(50)],
-    }),
-    address: new FormControl('', {
-      nonNullable: true,
-      validators: [notBlank, Validators.maxLength(300)],
-    }),
-    city: new FormControl('', {
-      nonNullable: true,
-      validators: [notBlank, Validators.maxLength(100)],
-    }),
-    country: new FormControl('', {
-      nonNullable: true,
-      validators: [notBlank, Validators.maxLength(100)],
-    }),
+    name: requiredText(200),
+    email: requiredText(256, Validators.email),
+    phoneNumber: requiredText(20, Validators.pattern(/^\+?[0-9\s-]{7,20}$/)),
+    taxId: requiredText(50),
+    address: requiredText(300),
+    city: requiredText(100),
+    country: requiredText(100),
   });
 
-  constructor() {
-    toObservable(this.id)
-      .pipe(
-        filter((id): id is string => !!id),
-        tap(() => {
-          this.loading.set(true);
-          this.loadError.set(null);
-        }),
-        switchMap((id) =>
-          this.service.getById(id).pipe(
-            catchError((err) => {
-              this.loadError.set(toApiErrorResponse(err).message);
-              this.loading.set(false);
-              return EMPTY;
-            }),
-          ),
-        ),
-        takeUntilDestroyed(),
-      )
-      .subscribe((customer) => {
-        this.form.reset(customer);
-        this.loading.set(false);
-      });
-  }
-
-  protected errorFor(field: Field): string | null {
-    const control = this.form.controls[field];
-    if (!control.touched || !control.errors) return null;
-    const [key, value] = Object.entries(control.errors)[0];
-    return MESSAGES[key]?.(value) ?? 'Invalid value.';
-  }
-
-  protected submit(): void {
-    if (this.saving()) return;
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    this.formError.set(null);
-    this.saving.set(true);
-
-    const payload = trimAll(this.form.getRawValue());
-    const id = this.id();
-    const request$ = id ? this.service.update(id, payload) : this.service.create(payload);
-
-    request$.pipe(finalize(() => this.saving.set(false))).subscribe({
-      next: (saved) => {
-        this.alert.success(id ? 'Customer updated.' : 'Customer created.');
-        this.form.markAsPristine();
-        void this.router.navigate(['/customers', id ?? saved.id]);
-      },
-      error: (err) => this.applyServerErrors(err),
-    });
-  }
-
-  private applyServerErrors(err: unknown): void {
-    const { message, errors } = toApiErrorResponse(err);
-    let mapped = false;
-
-    for (const e of errors ?? []) {
-      const control = e.field ? this.controlFor(e.field) : null;
-      if (!control) continue;
-      control.setErrors({ ...control.errors, server: e.message });
-      control.markAsTouched();
-      mapped = true;
-    }
-
-    if (!mapped) this.formError.set(message);
-  }
-
-  private controlFor(field: string): AbstractControl | null {
-    const name = field.replace(/^\$\./, '').toLowerCase();
-    const key = Object.keys(this.form.controls).find((k) => k.toLowerCase() === name);
-    return key ? this.form.get(key) : null;
-  }
-}
-
-function trimAll<T extends Record<string, string>>(value: T): T {
-  return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, v.trim()])) as T;
+  protected readonly state = entityForm({
+    form: this.form,
+    id: this.id,
+    load: (id) => this.service.getById(id),
+    create: (p) => this.service.create(p),
+    update: (id, p) => this.service.update(id, p),
+    onSaved: (saved, { id, created }) => {
+      this.alert.success(created ? 'Customer created.' : 'Customer updated.');
+      void this.router.navigate(['/customers', id ?? saved.id]);
+    },
+  });
 }
