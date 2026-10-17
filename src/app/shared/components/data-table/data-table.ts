@@ -1,7 +1,6 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, input, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { UI } from '../../ui';
-import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 import { EmptyState } from '../empty-state/empty-state';
 import { StatusBadge } from '../status-badge/status-badge';
 
@@ -29,17 +28,12 @@ export type RowAction = 'view' | 'edit' | 'delete';
 export interface ExtraAction {
   icon: string;
   label: string;
-  /** Appended to `${baseRoute}/${row.id}` — e.g. 'stock' → /products/1/stock */
   path: string;
 }
 
-/**
- * Generic presentational table: columns, row actions and a pagination footer.
- * Row actions are router links; delete only opens the confirm dialog.
- */
 @Component({
   selector: 'app-data-table',
-  imports: [...UI, DecimalPipe, StatusBadge, ConfirmDialog, EmptyState],
+  imports: [...UI, DecimalPipe, StatusBadge, EmptyState],
   templateUrl: './data-table.html',
   styleUrl: './data-table.scss',
 })
@@ -50,14 +44,22 @@ export class DataTable {
   readonly actions = input<RowAction[]>(['view', 'edit', 'delete']);
   readonly extraActions = input<ExtraAction[]>([]);
   readonly selectable = input(false);
-  readonly total = input<number | null>(null);
   readonly deleteMessage = input('This record will be permanently removed.');
 
-  protected readonly page = signal(0);
   protected readonly size = signal(10);
-  protected readonly confirmOpen = signal(false);
+  readonly deleteRow = output<string>();
+
+  readonly page = input(1);
+  readonly pageSize = input(20);
+  readonly total = input<number | null>(null);
+  readonly pageChange = output<{ page: number; pageSize: number }>();
 
   protected cell(row: object, key: string): any {
     return (row as Record<string, unknown>)[key];
+  }
+
+  protected onPagination(e: { page: number; size: number }): void {
+    const sizeChanged = e.size !== this.pageSize();
+    this.pageChange.emit({ page: sizeChanged ? 1 : e.page + 1, pageSize: e.size });
   }
 }

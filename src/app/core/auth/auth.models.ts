@@ -10,7 +10,7 @@ export interface AuthResponse {
 }
 
 export interface User {
-  id: number;
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -19,7 +19,7 @@ export interface User {
 
 
 export interface Role {
-  id: number;
+  id: string;
   name: string;
   permissions: string[];
   usersCount: number;

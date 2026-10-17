@@ -1,22 +1,22 @@
 <div class="table-wrap">
   <table tuiTable size="m" class="table">
     <thead>
-      <tr>
-        @if (selectable()) {
-          <th tuiTh class="narrow"><input tuiCheckbox type="checkbox" size="s" /></th>
-        }
-        @for (col of columns(); track col.key) {
-          <th
-            tuiTh
-            [class.num]="col.type === 'money' || col.type === 'number' || col.type === 'stock'"
-          >
-            {{ col.label }}
-          </th>
-        }
-        @if (actions().length || extraActions().length) {
-          <th tuiTh class="actions-col"></th>
-        }
-      </tr>
+    <tr>
+      @if (selectable()) {
+        <th tuiTh class="narrow"><input tuiCheckbox type="checkbox" size="s" /></th>
+      }
+      @for (col of columns(); track col.key) {
+        <th
+          tuiTh
+          [class.num]="col.type === 'money' || col.type === 'number' || col.type === 'stock'"
+        >
+          {{ col.label }}
+        </th>
+      }
+      @if (actions().length || extraActions().length) {
+        <th tuiTh class="actions-col"></th>
+      }
+    </tr>
     </thead>
     <tbody tuiTbody>
       @for (row of rows(); track $index) {
@@ -35,7 +35,7 @@
                   <strong>{{ value }}</strong>
                 }
                 @case ('money') {
-                  $ {{ value | number: '1.2-2' }}
+                   {{ value | number: '1.2-2' }}
                 }
                 @case ('number') {
                   {{ value | number }}
@@ -93,7 +93,7 @@
                     [iconStart]="extra.icon"
                     [tuiHint]="extra.label"
                     [routerLink]="[baseRoute(), id, extra.path]"
-                    >{{ extra.label }}</a
+                  >{{ extra.label }}</a
                   >
                 }
                 @if (actions().includes('view')) {
@@ -104,7 +104,7 @@
                     iconStart="@tui.eye"
                     tuiHint="View"
                     [routerLink]="[baseRoute(), id]"
-                    >View</a
+                  >View</a
                   >
                 }
                 @if (actions().includes('edit')) {
@@ -115,7 +115,7 @@
                     iconStart="@tui.pencil"
                     tuiHint="Edit"
                     [routerLink]="[baseRoute(), id, 'edit']"
-                    >Edit</a
+                  >Edit</a
                   >
                 }
                 @if (actions().includes('delete')) {
@@ -126,7 +126,7 @@
                     iconStart="@tui.trash-2"
                     tuiHint="Delete"
                     type="button"
-                    (click)="confirmOpen.set(true)"
+                    (click)="deleteRow.emit(id)"
                   >
                     Delete
                   </button>
@@ -151,10 +151,8 @@
 
 <tui-table-pagination
   class="pagination"
-  [page]="page()"
-  [size]="size()"
+  [page]="page() - 1"
+  [size]="pageSize()"
   [total]="total() ?? rows().length"
-  (paginationChange)="page.set($event.page); size.set($event.size)"
+  (paginationChange)="onPagination($event)"
 />
-
-<app-confirm-dialog [(open)]="confirmOpen" heading="Delete record?" [message]="deleteMessage()" />

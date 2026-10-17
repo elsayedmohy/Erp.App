@@ -1,84 +1,120 @@
 <div class="page">
-  <app-page-header
-    [heading]="customer.name"
-    [subtitle]="customer.city + ', ' + customer.country"
-    [breadcrumbs]="[
+  @if (loading()) {
+    <page-loader/>
+  }
+  @else if (customer(); as customer) {
+    <app-page-header
+      [heading]="customer.name"
+      [subtitle]="customer.city + ', ' + customer.country"
+      [breadcrumbs]="[
       { label: 'Sales' },
       { label: 'Customers', link: '/customers' },
       { label: customer.name },
     ]"
-  >
-    <a
-      tuiButton
-      appearance="secondary"
-      size="m"
-      iconStart="@tui.pencil"
-      [routerLink]="['/customers', customer.id, 'edit']"
+    >
+      <a
+        tuiButton
+        appearance="secondary"
+        size="m"
+        iconStart="@tui.pencil"
+        [routerLink]="['/customers', customer.id, 'edit']"
       >Edit</a
-    >
-    <a tuiButton appearance="secondary" size="m" iconStart="@tui.plus" routerLink="/orders/new"
+      >
+      <a tuiButton appearance="secondary" size="m" iconStart="@tui.plus" routerLink="/orders/new"
       >New order</a
-    >
-    <button
-      tuiButton
-      appearance="destructive"
-      size="m"
-      iconStart="@tui.trash-2"
-      type="button"
-      (click)="confirmOpen.set(true)"
-    >
-      Delete
-    </button>
-  </app-page-header>
+      >
+      <button
+        tuiButton
+        appearance="outline-destructive"
+        size="m"
+        iconStart="@tui.trash-2"
+        type="button"
+        (click)="delete(customer.id)"
+      >
+        Delete
+      </button>
+    </app-page-header>
 
-  <tui-tabs [(activeItemIndex)]="tab">
-    <button tuiTab type="button" iconStart="@tui.info">Info</button>
-    <button tuiTab type="button" iconStart="@tui.receipt">Orders</button>
-    <button tuiTab type="button" iconStart="@tui.file-text">Invoices</button>
-  </tui-tabs>
+    <tui-tabs [activeItemIndex]="tab()" (activeItemIndexChange)="onTabChange($event)">
+      <button tuiTab type="button" iconStart="@tui.info">Info</button>
+      <button tuiTab type="button" iconStart="@tui.receipt">Orders</button>
+      <button tuiTab type="button" iconStart="@tui.file-text">Invoices</button>
+    </tui-tabs>
 
-  @switch (tab()) {
-    @case (0) {
-      <section tuiCardLarge appearance="outline-grayscale">
-        <dl class="dl">
-          <dt>Email</dt>
-          <dd>{{ customer.email }}</dd>
-          <dt>Phone</dt>
-          <dd>{{ customer.phone }}</dd>
-          <dt>Address</dt>
-          <dd>{{ customer.address }}</dd>
-          <dt>City</dt>
-          <dd>{{ customer.city }}</dd>
-          <dt>Country</dt>
-          <dd>{{ customer.country }}</dd>
-          <dt>Tax ID</dt>
-          <dd>
-            <code>{{ customer.taxId }}</code>
-          </dd>
-        </dl>
-      </section>
+
+    @switch (tab()) {
+      @case (0) {
+        <section tuiCardLarge appearance="outline-grayscale">
+          <dl class="dl">
+            <dt>Email</dt>
+            <dd>{{ customer.email }}</dd>
+            <dt>Phone</dt>
+            <dd>{{ customer.phoneNumber }}</dd>
+            <dt>Address</dt>
+            <dd>{{ customer.address }}</dd>
+            <dt>City</dt>
+            <dd>{{ customer.city }}</dd>
+            <dt>Country</dt>
+            <dd>{{ customer.country }}</dd>
+            <dt>Tax ID</dt>
+            <dd>
+              <code>{{ customer.taxId }}</code>
+            </dd>
+          </dl>
+        </section>
+      }
+      @case (1) {
+        @let s = orders;
+        @if (s.initialLoading()) {
+          <app-table-skeleton [columns]="orderColumns" [rows]="5"/>
+        } @else if (s.error() && !s.data()) {
+          <app-error-state [message]="s.error()!" (retry)="s.reload()" />
+        } @else if (s.data(); as page) {
+          @if (page.total === 0) {
+            <app-empty-state icon="@tui.file-text" heading="No invoices yet"
+                             message="orders for this customer will appear here." />
+          } @else {
+            <app-data-table
+              [class.refreshing]="s.loading()"
+              [columns]="orderColumns"
+              [rows]="page.items"
+              [page]="page.page"
+              [pageSize]="page.pageSize"
+              [total]="page.total"
+              [actions]="['view']"
+              baseRoute="/orders"
+              (pageChange)="onOrdersPage($event)"
+            />
+          }
+        }
+      }
+      @case (2) {
+        @let s = invoices;
+        @if (s.initialLoading()) {
+          <app-table-skeleton [columns]="invoiceColumns" [rows]="5"/>
+        } @else if (s.error() && !s.data()) {
+          <app-error-state [message]="s.error()!" (retry)="s.reload()" />
+        } @else if (s.data(); as page) {
+          @if (page.total === 0) {
+            <app-empty-state icon="@tui.file-text" heading="No invoices yet"
+                             message="Invoices for this customer will appear here." />
+          } @else {
+            <app-data-table
+              [class.refreshing]="s.loading()"
+              [columns]="invoiceColumns"
+              [rows]="page.items"
+              [page]="page.page"
+              [pageSize]="page.pageSize"
+              [total]="page.total"
+              [actions]="['view']"
+              baseRoute="/invoices"
+              (pageChange)="onInvoicesPage($event)"
+            />
+          }
+        }
+
+      }
     }
-    @case (1) {
-      <app-data-table
-        [columns]="orderColumns"
-        [rows]="orders"
-        baseRoute="/orders"
-        [actions]="['view']"
-      />
-    }
-    @case (2) {
-      <app-data-table
-        [columns]="invoiceColumns"
-        [rows]="invoices"
-        baseRoute="/invoices"
-        [actions]="['view']"
-      />
-    }
+
   }
-
-  <app-confirm-dialog
-    [(open)]="confirmOpen"
-    heading="Delete customer?"
-    message="The customer will be archived (soft delete)."
-  />
 </div>

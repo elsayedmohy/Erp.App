@@ -87,7 +87,7 @@
         >
       </tui-opt-group>
       <tui-opt-group>
-        <a tuiOption iconStart="@tui.log-out" routerLink="/login">Logout</a>
+        <button tuiOption iconStart="@tui.log-out" (click)="auth.logout()">Logout</button>
       </tui-opt-group>
     </tui-data-list>
   </ng-template>

@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { finalize, map, Observable, shareReplay } from 'rxjs';
 import { APP_CONFIG } from '../config/app-config';
 import { TokenService } from './token.service';
-import { TokensResponse } from '@core/auth/auth.models';
+import { AuthResponse, TokensResponse } from '@core/auth/auth.models';
 
 @Injectable({ providedIn: 'root' })
 export class TokenRefreshService {
@@ -14,13 +14,13 @@ export class TokenRefreshService {
 
   refresh(): Observable<string> {
     this.inFlight$ ??= this.http
-      .post<TokensResponse>(`${this.config.apiBaseUrl}/auth/refresh`, {
+      .post<AuthResponse>(`${this.config.apiBaseUrl}/auth/refresh`, {
         refreshToken: this.tokens.getRefreshToken(),
       })
       .pipe(
         map((res) => {
-          this.tokens.setTokens(res.accessToken, res.refreshToken);
-          return res.accessToken;
+          this.tokens.setTokens(res.token, res.refreshToken);
+          return res.token;
         }),
         finalize(() => (this.inFlight$ = null)),
         shareReplay(1),

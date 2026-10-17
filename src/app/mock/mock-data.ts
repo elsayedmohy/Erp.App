@@ -10,7 +10,6 @@ import type {
   AutomationRule,
   AutomationRun,
   Category,
-  Customer,
   Department,
   Employee,
   Invoice,
@@ -28,6 +27,7 @@ import type {
   WebhookEndpoint,
 } from '../core/models';
 import { Role, User } from '@core/auth/auth.models';
+import { Customer } from '../modules/customers/data/model';
 
 // ---------- Lookups (dropdown options) ----------
 export const MOCK_ROLE_NAMES = ['Admin', 'Manager', 'InventoryManager', 'Accountant', 'Employee'];
@@ -81,24 +81,24 @@ export const MOCK_PERMISSIONS = [
 
 // ---------- Level 1 ----------
 export const MOCK_USERS: User[] = [
-  { id: 1, firstName: 'Admin', lastName: 'User', email: 'admin@company.com', role: 'Admin' },
-  { id: 2, firstName: 'John', lastName: 'Doe', email: 'john.doe@company.com', role: 'Manager' },
+  { id: "1", firstName: 'Admin', lastName: 'User', email: 'admin@company.com', role: 'Admin' },
+  { id: "2", firstName: 'John', lastName: 'Doe', email: 'john.doe@company.com', role: 'Manager' },
   {
-    id: 3,
+    id: "3",
     firstName: 'Mona',
     lastName: 'Hassan',
     email: 'mona.hassan@company.com',
     role: 'Accountant',
   },
   {
-    id: 4,
+    id: "4",
     firstName: 'Omar',
     lastName: 'Farouk',
     email: 'omar.farouk@company.com',
     role: 'InventoryManager',
   },
   {
-    id: 5,
+    id: "5",
     firstName: 'Lina',
     lastName: 'Saleh',
     email: 'lina.saleh@company.com',
@@ -107,73 +107,43 @@ export const MOCK_USERS: User[] = [
 ];
 
 export const MOCK_ROLES: Role[] = [
-  { id: 1, name: 'Admin', permissions: ['*'], usersCount: 1 },
+  { id: "1", name: 'Admin', permissions: ['*'], usersCount: 1 },
   {
-    id: 2,
+    id: "2",
     name: 'Manager',
     permissions: ['projects.manage', 'reports.view', 'users.read'],
     usersCount: 3,
   },
   {
-    id: 3,
+    id: "3",
     name: 'InventoryManager',
     permissions: ['inventory.read', 'inventory.write'],
     usersCount: 2,
   },
-  { id: 4, name: 'Accountant', permissions: ['finance.read', 'finance.write'], usersCount: 2 },
-  { id: 5, name: 'Employee', permissions: ['projects.read'], usersCount: 14 },
+  { id: "4", name: 'Accountant', permissions: ['finance.read', 'finance.write'], usersCount: 2 },
+  { id: "5", name: 'Employee', permissions: ['projects.read'], usersCount: 14 },
 ];
 
 export const MOCK_CUSTOMERS: Customer[] = [
   {
-    id: 1,
+    id: '1',
     name: 'Acme Corp',
     email: 'info@acme.com',
-    phone: '+1-555-000-1234',
+    phoneNumber: '+1-555-000-1234',
     address: '123 Main St',
     city: 'New York',
     country: 'USA',
     taxId: 'US123456789',
   },
   {
-    id: 2,
+    id: '2',
     name: 'Globex Ltd',
     email: 'sales@globex.co.uk',
-    phone: '+44-20-7946-0000',
+    phoneNumber: '+44-20-7946-0000',
     address: '1 King St',
     city: 'London',
     country: 'UK',
     taxId: 'GB987654321',
-  },
-  {
-    id: 3,
-    name: 'Nile Trading',
-    email: 'contact@niletrading.eg',
-    phone: '+20-2-2345-6789',
-    address: '45 Tahrir Sq',
-    city: 'Cairo',
-    country: 'Egypt',
-    taxId: 'EG456123789',
-  },
-  {
-    id: 4,
-    name: 'Initech',
-    email: 'hello@initech.com',
-    phone: '+1-555-010-2020',
-    address: '500 Office Park',
-    city: 'Austin',
-    country: 'USA',
-    taxId: 'US555666777',
-  },
-  {
-    id: 5,
-    name: 'Umbrella GmbH',
-    email: 'kontakt@umbrella.de',
-    phone: '+49-30-123456',
-    address: 'Hauptstr. 8',
-    city: 'Berlin',
-    country: 'Germany',
-    taxId: 'DE112233445',
   },
 ];
 

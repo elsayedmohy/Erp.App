@@ -1,13 +1,8 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { APP_CONFIG } from '../config/app-config';
-import { User } from '@core/auth/auth.models';
+import { User } from '../../modules/profile/data/model';
 
-interface TokenClaims {
-  readonly sub: string;
-  readonly unique_name: string;
-  readonly email: string;
-  readonly role: string;
-}
+
 
 @Injectable({ providedIn: 'root' })
 export class TokenService {
@@ -35,6 +30,9 @@ export class TokenService {
   }
   setUser(user: User | null): void {
     this.user.set(user);
+    if(user) {
+      localStorage.setItem(this.config.userStorageKey, user.toString());
+    }
   }
 
   save(token: string, refreshToken?: string): void {
@@ -55,15 +53,6 @@ export class TokenService {
     this.user.set(null);
   }
 
-  decode(token: string): TokenClaims | null {
-    try {
-      const [, payload] = token.split('.');
-      const json = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
-      return JSON.parse(json) as TokenClaims;
-    } catch {
-      return null;
-    }
-  }
 
   setTokens(accessToken: string, refreshToken: string): void {
     localStorage.setItem(this.config.tokenStorageKey, accessToken);

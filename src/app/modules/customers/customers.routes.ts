@@ -15,7 +15,6 @@ export default [
   },
   {
     path: ':id/edit',
-    data: { mode: 'edit' },
     loadComponent: () => import('./customer-form/customer-form').then((m) => m.CustomerForm),
   },
 ] satisfies Routes;

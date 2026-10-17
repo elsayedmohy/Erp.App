@@ -2,6 +2,10 @@
   display: flex;
   flex-direction: column;
   block-size: 100vh;
+  main[tuinavigationmain] {
+    border: 0.5rem solid transparent !important;
+    padding :0 1rem ;
+  }
 }
 
 .body {

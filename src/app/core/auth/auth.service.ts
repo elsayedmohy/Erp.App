@@ -5,11 +5,12 @@ import { ApiService } from '@core/http/api.service';
 import { TokenService } from '@core/auth/token.service';
 import { AuthResponse, LoginRequest } from '@core/auth/auth.models';
 import { toApiErrorResponse } from '@core/utils/api-error.util';
-
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly api = inject(ApiService);
+  private readonly router = inject(Router);
   private readonly tokenService = inject(TokenService);
   private readonly config = inject(APP_CONFIG);
 
@@ -18,9 +19,7 @@ export class AuthService {
       switchMap((result) =>
         result
           ? this.persist(result, credentials.email)
-          : throwError(() =>
-              toApiErrorResponse(result),
-            ),
+          : throwError(() => toApiErrorResponse(result)),
       ),
       catchError((error: unknown) => throwError(() => toApiErrorResponse(error))),
     );
@@ -28,9 +27,13 @@ export class AuthService {
 
   logout(): void {
     const refreshToken = this.tokenService.getRefreshToken();
-    this.tokenService.clear();
     if (refreshToken) {
-      this.api.post<void>('auth/logout', { refreshToken }).subscribe({ error: () => {} });
+      this.api.post<void>('auth/logout', { refreshToken }).subscribe({
+        next: () => {
+          this.router.navigate(['/auth/login']);
+          this.tokenService.clear();
+        },
+      });
     }
   }
 
@@ -43,4 +46,3 @@ export class AuthService {
     return of(response);
   }
 }
-

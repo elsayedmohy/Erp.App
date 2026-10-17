@@ -6,6 +6,7 @@ import { MOCK_CURRENT_USER, MOCK_NOTIFICATIONS } from '@mock/mock-data';
 import { UI } from '@shared/ui';
 import { TokenService } from '@core/auth/token.service';
 import { ProfileService } from '../../modules/profile/data/profile.service';
+import { AuthService } from '@core/auth/auth.service';
 
 interface NavItem {
   label: string;
@@ -27,6 +28,7 @@ interface NavGroup {
 })
 export class Shell {
   protected readonly darkMode = inject(TUI_DARK_MODE);
+  protected readonly auth = inject(AuthService);
   protected readonly theme = computed(() => (this.darkMode() ? 'dark' : 'light'));
   protected readonly expanded = signal(true);
   protected notificationsOpen = signal(false);

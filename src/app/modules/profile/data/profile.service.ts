@@ -2,14 +2,14 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { ApiService } from '@core/http/api.service';
 import { TokenService } from '@core/auth/token.service';
-import { ProfileResponse } from './model';
+import { User } from './model';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
   private readonly api = inject(ApiService);
   private readonly tokens = inject(TokenService);
 
-  readonly profile = signal<ProfileResponse | null>(null);
+  readonly profile = signal<User | null>(null);
 
   load(): void {
     this.refresh().subscribe({
@@ -17,23 +17,29 @@ export class ProfileService {
     });
   }
 
-  refresh(): Observable<ProfileResponse> {
-    return this.api.get<ProfileResponse>('profile/me').pipe(tap((p) => this.apply(p)));
+  refresh(): Observable<User> {
+    return this.api.get<User>('profile/me').pipe(tap((p) => this.apply(p)));
   }
 
-  private apply(p: ProfileResponse): void {
+  private apply(p: User): void {
     this.profile.set(p);
 
     const token = this.tokens.getToken();
     const user = this.tokens.getUser();
-    if (token && user) {
+
+    if (token) {
       this.tokens.save(token);
+    }
+
+    if (user) {
       this.tokens.setUser({
         ...user,
         firstName: p.firstName,
         lastName: p.lastName,
         email: p.email,
       });
+    }else {
+      this.tokens.setUser(p);
     }
   }
 }

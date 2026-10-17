@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { TokenService } from '@core/auth/token.service';
-import { Role } from '@core/auth/auth.models';
+import { RoleSummery } from '../../modules/profile/data/model';
 
 export function roleGuard(...allowed: string[]): CanActivateFn {
   return () => {
@@ -13,7 +13,7 @@ export function roleGuard(...allowed: string[]): CanActivateFn {
       return router.createUrlTree(['/auth/login']);
     }
 
-    if (allowed.includes(user.role)) {
+    if (allowed.includes(user.role.name)) {
       return true;
     }
 
