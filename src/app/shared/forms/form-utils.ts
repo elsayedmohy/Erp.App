@@ -1,5 +1,6 @@
 import {
   AbstractControl,
+  FormArray,
   FormControl,
   FormGroup,
   ValidationErrors,
@@ -28,6 +29,13 @@ export function strongPassword(c: AbstractControl): ValidationErrors | null {
     : { weakPassword: true };
 }
 
+export function minItems(min = 1): ValidatorFn {
+  return (c: AbstractControl): ValidationErrors | null => {
+    const length = c instanceof FormArray ? c.length : Array.isArray(c.value) ? c.value.length : 0;
+    return length >= min ? null : { minItems: { required: min, actual: length } };
+  };
+}
+
 
 const MESSAGES: Record<string, (e: any) => string> = {
   required: () => 'This field is required.',
@@ -39,6 +47,8 @@ const MESSAGES: Record<string, (e: any) => string> = {
   max: (e) => `Must be at most ${e.max}.`,
   pattern: () => 'Invalid format.',
   server: (msg: string) => msg,
+  minItems: (e) =>
+    e.required === 1 ? 'Add at least one item.' : `Add at least ${e.required} items.`,
 };
 
 export function errorMessage(control: AbstractControl | null): string | null {
