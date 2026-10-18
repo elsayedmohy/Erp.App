@@ -13,8 +13,10 @@ import { listState } from '@shared/data/list-state';
 import { UsersService } from '../data/users.service';
 import { UserQuery, UserResponse } from '../data/models';
 import { TUI_CONFIRM } from '@taiga-ui/kit';
-import { filter, switchMap } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs';
 import { toApiErrorResponse } from '@core/utils/api-error.util';
+import { RolesService } from '../../roles/data/roles.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-users-list',
@@ -23,12 +25,15 @@ import { toApiErrorResponse } from '@core/utils/api-error.util';
 })
 export class UsersList {
   private readonly service = inject(UsersService);
+  private readonly roleService = inject(RolesService);
   private readonly dialogs = inject(TuiDialogService);
   private readonly alert = inject(AlertService);
 
   protected readonly query = signal<UserQuery>({ page: 1, pageSize: 20 });
   protected readonly users = listState(this.query, (q) => this.service.list(q));
-  protected readonly roles = ROLE_NAMES;
+  protected readonly roles = toSignal(this.roleService.list().pipe(map((r) => r.items)), {
+    initialValue: [],
+  });
   protected role: string | null = null;
   protected readonly columns: Column<UserResponse>[] = [
     { key: 'name', label: 'Name', type: 'person', value: (u) => `${u.firstName} ${u.lastName}` },

@@ -22,19 +22,7 @@ import { requiredText } from '@shared/forms/form-utils';
 import { entityForm } from '@shared/forms/entity-form';
 import { FieldError } from '@shared/forms/field-error';
 
-type Field = keyof CustomerRequest;
 
-function notBlank(c: AbstractControl): ValidationErrors | null {
-  return typeof c.value === 'string' && c.value.trim() ? null : { required: true };
-}
-
-const MESSAGES: Record<string, (e: any) => string> = {
-  required: () => 'This field is required.',
-  email: () => 'Enter a valid email address.',
-  maxlength: (e) => `Maximum ${e.requiredLength} characters.`,
-  pattern: () => 'Invalid format.',
-  server: (msg: string) => msg,
-};
 
 @Component({
   selector: 'app-customer-form',

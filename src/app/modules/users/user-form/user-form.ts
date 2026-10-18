@@ -15,7 +15,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { PagedResult } from '../../models';
 import { ApiService } from '@core/http/api.service';
 import { map } from 'rxjs';
-import { RolesService } from '../data/roles.service';
+import { RolesService } from '../../roles/data/roles.service';
 import { UserFieldDef, UserResponse } from '../data/models';
 import { TuiStringHandler } from '@taiga-ui/cdk';
 

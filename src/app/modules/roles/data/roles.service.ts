@@ -8,7 +8,11 @@ import { RoleRequest, RoleResponse, RoleSummery } from './models';
 export class RolesService {
   private readonly api = inject(ApiService);
 
-  list(query?: PageQuery): Observable<PagedResult<RoleSummery>> {
+  list(query?: PageQuery): Observable<PagedResult<RoleResponse>> {
+    return this.api.get<PagedResult<RoleResponse>>(`roles`, { params: query });
+  }
+
+  listSummery(query?: PageQuery): Observable<PagedResult<RoleSummery>> {
     return this.api.get<PagedResult<RoleSummery>>(`roles`, { params: query });
   }
 
@@ -27,4 +31,15 @@ export class RolesService {
   delete(id: string): any {
     return this.api.delete<any>(`roles/${id}`);
   }
+
+  permissions(): Observable<string[]> {
+    return this.api.get<string[]>('roles/permissions');
+  }
+
+
+   humanize(s: string): string {
+    const words = s.replace(/-/g, ' ');
+    return words.charAt(0).toUpperCase() + words.slice(1);
+  }
+
 }

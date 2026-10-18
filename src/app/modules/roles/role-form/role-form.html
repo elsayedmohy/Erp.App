@@ -1,0 +1,67 @@
+<div class="page">
+  <app-page-header
+    [heading]="state.isEdit() ? 'Edit role' : 'New role'"
+    [breadcrumbs]="[{ label: 'Administration' }, { label: 'Roles', link: '/roles' },
+                    { label: state.isEdit() ? 'Edit' : 'New' }]"
+  />
+
+  @if (state.loadError()) {
+    <app-error-state heading="Couldn't load role" [message]="state.loadError()!" [retryable]="false" />
+  } @else if (state.loading()) {
+    <page-loader />
+  } @else {
+    <form tuiCardLarge appearance="outline-grayscale" tuiForm="m" [formGroup]="form" (ngSubmit)="state.submit()">
+      @if (state.formError()) {
+        <div tuiNotification appearance="negative" size="m">{{ state.formError() }}</div>
+      }
+
+      <div class="field">
+        <tui-textfield>
+          <label tuiLabel>Role name</label>
+          <input tuiInput formControlName="name" placeholder="Inventory manager" maxlength="50" />
+        </tui-textfield>
+        <app-field-error [control]="form.controls.name" />
+      </div>
+
+      <div class="field">
+        <strong>Permissions</strong>
+        <div class="groups">
+          @for (g of groups(); track g.module) {
+            <section class="group">
+              <label class="group__head">
+                <input
+                  tuiCheckbox
+                  type="checkbox"
+                  [ngModel]="groupValue(g)"
+                  (ngModelChange)="toggleGroup(g, !!$event)"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+                <strong>{{ g.label }}</strong>
+              </label>
+              @for (code of g.codes; track code) {
+                <label class="item">
+                  <input
+                    tuiCheckbox
+                    type="checkbox"
+                    [ngModel]="isChecked(code)"
+                    (ngModelChange)="toggle(code, $event)"
+                    [ngModelOptions]="{ standalone: true }"
+                  />
+                  {{ code.split('.')[1] }}
+                </label>
+              }
+            </section>
+          }
+        </div>
+        <app-field-error [control]="form.controls.permissions" />
+      </div>
+
+      <footer>
+        <a tuiButton appearance="secondary" size="m" routerLink="/users/roles">Cancel</a>
+        <button tuiButton size="m" type="submit" [disabled]="state.saving()">
+          {{ state.saving() ? 'Saving…' : state.isEdit() ? 'Update' : 'Save' }}
+        </button>
+      </footer>
+    </form>
+  }
+</div>

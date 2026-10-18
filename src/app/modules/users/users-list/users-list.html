@@ -3,7 +3,7 @@
     heading="Users"
     [breadcrumbs]="[{ label: 'Administration' }, { label: 'Users' }]"
   >
-    <a tuiButton appearance="floating" size="m" iconStart="@tui.shield" routerLink="roles"
+    <a tuiButton appearance="floating" size="m" iconStart="@tui.shield" routerLink="/roles"
     >Manage roles</a
     >
     <a tuiButton size="m" iconStart="@tui.plus" routerLink="new">New user</a>
@@ -63,6 +63,7 @@
         [page]="page.page"
         [pageSize]="page.pageSize"
         [total]="page.total"
+        [actions]="['edit','delete']"
         (deleteRow)="onDelete($event)"
         (pageChange)="onPage($event)"
         baseRoute="/users"

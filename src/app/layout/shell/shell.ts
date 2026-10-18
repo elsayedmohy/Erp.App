@@ -92,7 +92,7 @@ export class Shell {
       icon: '@tui.settings',
       items: [
         { label: 'Users', icon: '@tui.user-cog', link: '/users' },
-        { label: 'Roles', icon: '@tui.shield', link: '/users/roles' },
+        { label: 'Roles', icon: '@tui.shield', link: '/roles' },
         { label: 'Automation', icon: '@tui.workflow', link: '/automation' },
         { label: 'Webhooks', icon: '@tui.webhook', link: '/webhooks' },
       ],

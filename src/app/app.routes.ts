@@ -30,6 +30,7 @@ export const routes: Routes = [
       },
       // Level 1
       { path: 'users', loadChildren: () => import('./modules/users/users.routes') },
+      { path: 'roles', loadChildren: () => import('./modules/roles/roles.routes') },
       { path: 'customers', loadChildren: () => import('./modules/customers/customers.routes') },
       { path: 'products', loadChildren: () => import('./modules/products/products.routes') },
       { path: 'suppliers', loadChildren: () => import('./modules/suppliers/suppliers.routes') },

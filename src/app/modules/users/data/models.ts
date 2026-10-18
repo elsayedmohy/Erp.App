@@ -1,4 +1,5 @@
 import { PageQuery } from '../../models';
+import { RoleSummery } from '../../roles/data/models';
 
 export interface UserQuery extends PageQuery {}
 
@@ -35,20 +36,4 @@ export interface UserFieldDef {
   wide?: boolean;
   createOnly?: boolean;
   lockedOnEdit?: boolean;
-}
-
-export interface RoleSummery {
-  readonly id: string;
-  readonly name: string;
-}
-
-export interface RoleResponse {
-  readonly id: string;
-  readonly name: string;
-  readonly permissions: string[];
-}
-
-export interface RoleRequest {
-  name: string;
-  permissions: string[];
 }
