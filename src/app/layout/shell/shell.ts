@@ -50,7 +50,7 @@ export class Shell {
       icon: '@tui.package',
       items: [
         { label: 'Products', icon: '@tui.box', link: '/products' },
-        { label: 'Categories', icon: '@tui.tags', link: '/products/categories' },
+        { label: 'Categories', icon: '@tui.tags', link: '/categories' },
       ],
     },
     {

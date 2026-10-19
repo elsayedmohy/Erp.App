@@ -33,6 +33,7 @@ export const routes: Routes = [
       { path: 'roles', loadChildren: () => import('./modules/roles/roles.routes') },
       { path: 'customers', loadChildren: () => import('./modules/customers/customers.routes') },
       { path: 'products', loadChildren: () => import('./modules/products/products.routes') },
+      { path: 'categories', loadChildren: () => import('./modules/categories/categories.routes') },
       { path: 'suppliers', loadChildren: () => import('./modules/suppliers/suppliers.routes') },
       { path: 'purchasing', loadChildren: () => import('./modules/purchasing/purchasing.routes') },
       { path: 'orders', loadChildren: () => import('./modules/orders/orders.routes') },

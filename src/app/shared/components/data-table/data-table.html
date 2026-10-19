@@ -118,6 +118,19 @@
                   >Edit</a
                   >
                 }
+
+                @if (actions().includes('cedit')) {
+                  <button
+                    tuiIconButton
+                    appearance="flat-grayscale"
+                    size="xs"
+                    iconStart="@tui.pencil"
+                    tuiHint="Edit"
+                    type="button"
+                    (click)="editRow.emit(id)"
+                  >Edit</button
+                  >
+                }
                 @if (actions().includes('delete')) {
                   <button
                     tuiIconButton

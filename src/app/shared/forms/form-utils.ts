@@ -21,6 +21,17 @@ export function requiredText(maxLength: number, ...validators: ValidatorFn[]): F
   });
 }
 
+
+export function requiredNumber(
+  initialValue = 0,
+  ...validators: ValidatorFn[]
+): FormControl<number> {
+  return new FormControl(initialValue, {
+    nonNullable: true,
+    validators: [Validators.required, ...validators],
+  });
+}
+
 export function strongPassword(c: AbstractControl): ValidationErrors | null {
   const v = c.value as string;
   if (!v) return null;

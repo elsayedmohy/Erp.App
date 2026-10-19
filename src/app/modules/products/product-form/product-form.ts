@@ -1,26 +1,80 @@
-import { Component, input } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, computed, inject, input, signal } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import type { TuiFileLike } from '@taiga-ui/kit';
 import { MOCK_CATEGORIES } from '@mock/mock-data';
 import { PageHeader } from '@shared/components/page-header/page-header';
 import { UI } from '@shared/ui';
+import { CustomersService } from '../../customers/data/customers.service';
+import { Router } from '@angular/router';
+import { AlertService } from '@core/services/alert.service';
+import { CustomerRequest } from '../../customers/data/model';
+import { requiredNumber, requiredText } from '@shared/forms/form-utils';
+import { entityForm } from '@shared/forms/entity-form';
+import { ProductsService } from '../data/products.service';
+import { ProductRequest } from '../data/models';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { CategoriesService } from '../../categories/data/categories.service';
+import { map } from 'rxjs';
+import { ErrorState } from '@shared/components/error-state/error-state';
+import { FieldError } from '@shared/forms/field-error';
+import { PageLoader } from '@shared/components/page-loader/page-loader';
+import { Column } from '@shared/components/data-table/data-table';
+import { TuiStringHandler } from '@taiga-ui/cdk';
+import { Category } from '../../categories/data/models';
 
 @Component({
   selector: 'app-product-form',
-  imports: [...UI, PageHeader],
+  imports: [...UI, PageHeader, ErrorState, FieldError, PageLoader],
   templateUrl: './product-form.html',
 })
 export class ProductForm {
-  readonly mode = input<'create' | 'edit'>('create');
-  protected readonly categories = MOCK_CATEGORIES.map((c) => c.name);
+  private readonly service = inject(ProductsService);
+  private readonly categoriesService = inject(CategoriesService);
+  private readonly router = inject(Router);
+  private readonly alert = inject(AlertService);
+
+  readonly id = input<string>();
+  protected readonly isEdit = computed(() => !!this.id());
+
+  protected readonly loading = signal(false);
+  protected readonly loadError = signal<string | null>(null);
+  protected readonly saving = signal(false);
+  protected readonly formError = signal<string | null>(null);
+
+  protected readonly fields: Column[] = [
+    { key: 'name', label: 'Name', placeholder: 'Product Name' },
+    { key: 'sku', label: 'sku', placeholder: 'sku-0000000' },
+    { key: 'costPrice', label: 'Cost Price', placeholder: '100', type: 'number' },
+    { key: 'unitPrice', label: 'Unit Price', placeholder: '100', type: 'number' },
+  ];
+
   protected readonly form = new FormGroup({
-    name: new FormControl(''),
-    sku: new FormControl(''),
-    category: new FormControl<string | null>(null),
-    unitPrice: new FormControl<number | null>(null),
-    costPrice: new FormControl<number | null>(null),
+    name: requiredText(200),
+    categoryId: requiredText(200),
+    sku: requiredText(200),
+    costPrice: requiredNumber(),
+    unitPrice: requiredNumber(),
     stockQuantity: new FormControl<number | null>(null),
     reorderLevel: new FormControl<number | null>(null),
-    image: new FormControl<TuiFileLike | null>(null),
   });
+
+  protected readonly state = entityForm({
+    form: this.form,
+    id: this.id,
+    load: (id) => this.service.getById(id),
+    create: (p) => this.service.create(p),
+    update: (id, p) => this.service.update(id, p),
+    onSaved: (saved, { id, created }) => {
+      this.alert.success(created ? 'Product created.' : 'Product updated.');
+      void this.router.navigate(['/products', id ?? saved.id]);
+    },
+  });
+  protected readonly categories = toSignal(
+    this.categoriesService.list().pipe(map((r) => r.items)),
+    {
+      initialValue: [],
+    },
+  );
+  protected readonly stringify: TuiStringHandler<string> = (id: string) =>
+    this.categories().find((item) => item.id === id)?.name ?? '';
 }

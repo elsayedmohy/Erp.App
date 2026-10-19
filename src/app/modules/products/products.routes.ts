@@ -9,10 +9,6 @@ export default [
     path: 'new',
     loadComponent: () => import('./product-form/product-form').then((m) => m.ProductForm),
   },
-  {
-    path: 'categories',
-    loadComponent: () => import('./categories/categories').then((m) => m.Categories),
-  },
   { path: ':id', redirectTo: ':id/edit', pathMatch: 'full' },
   {
     path: ':id/edit',

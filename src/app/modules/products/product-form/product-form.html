@@ -1,13 +1,15 @@
+@let s = state;
+
 <div class="page">
   <app-page-header
-    [heading]="mode() === 'edit' ? 'Edit product' : 'New product'"
+    [heading]="s.isEdit() ? 'Edit product' : 'New product'"
     [breadcrumbs]="[
       { label: 'Inventory' },
       { label: 'Products', link: '/products' },
-      { label: mode() === 'edit' ? 'Edit' : 'New' },
+      { label: s.isEdit() ?  'Edit' : 'New' },
     ]"
   >
-    @if (mode() === 'edit') {
+    @if (s.isEdit()) {
       <a
         tuiButton
         appearance="secondary"
@@ -18,64 +20,104 @@
       >
     }
   </app-page-header>
+  @if (s.loadError()) {
+    <app-error-state heading="Couldn't load product" [message]="s.loadError()!" [retryable]="false">
+      <a tuiButton size="s" appearance="secondary" routerLink="/products">Back to products</a>
+    </app-error-state>
+  } @else if (s.loading()) {
+    <page-loader />
+  } @else {
+    <form class="grid-3" tuiCardLarge appearance="outline-grayscale" tuiForm="m" [formGroup]="form" (ngSubmit)="s.submit()">
+      @if (s.formError()) {
+        <div tuiNotification appearance="negative" size="m">{{ s.formError() }}</div>
+      }
 
-  <form [formGroup]="form" class="grid-3">
-    <section tuiCardLarge appearance="outline-grayscale" tuiForm="m" class="span-2">
-      <header tuiHeader="h5"><h3 tuiTitle>Details</h3></header>
       <div class="grid-2">
-        <tui-textfield>
-          <label tuiLabel>Name</label>
-          <input tuiInput formControlName="name" placeholder="Laptop Pro 15" />
-        </tui-textfield>
-        <tui-textfield>
-          <label tuiLabel>SKU</label>
-          <input tuiInput formControlName="sku" placeholder="LP-15-001" />
-        </tui-textfield>
-        <tui-textfield tuiChevron>
-          <label tuiLabel>Category</label>
-          <input tuiSelect formControlName="category" />
-          <tui-data-list-wrapper *tuiDropdown [items]="categories" />
-        </tui-textfield>
-      </div>
+        @for (f of fields; track f.key) {
+          <div class="field" >
+            <tui-textfield>
+              <label tuiLabel>{{ f.label }}</label>
+              <input tuiInput [formControlName]="f.key" [type]="f.type ?? 'text'"
+                     [placeholder]="f.placeholder" />
+            </tui-textfield>
 
-      <header tuiHeader="h5"><h3 tuiTitle>Pricing &amp; stock</h3></header>
-      <div class="grid-2">
-        <tui-textfield>
-          <label tuiLabel>Unit price</label>
-          <input tuiInputNumber prefix="$ " formControlName="unitPrice" />
-        </tui-textfield>
-        <tui-textfield>
-          <label tuiLabel>Cost price</label>
-          <input tuiInputNumber prefix="$ " formControlName="costPrice" />
-        </tui-textfield>
-        <tui-textfield>
-          <label tuiLabel>Stock quantity</label>
-          <input tuiInputNumber formControlName="stockQuantity" />
-        </tui-textfield>
-        <tui-textfield>
-          <label tuiLabel>Reorder level</label>
-          <input tuiInputNumber formControlName="reorderLevel" />
+<!--            <app-field-error [control]="form.controls[f.key]" />-->
+          </div>
+        }
+        <tui-textfield tuiChevron
+                       tuiTextfieldSize="m"
+                       [stringify]="stringify">
+          <input
+            tuiSelect
+            placeholder="All categories"
+            formControlName="categoryId"
+          />
+
+
+          <tui-data-list *tuiDropdown>
+            @for (item of categories(); track item) {
+              <button
+                tuiOption
+                type="button"
+                [value]="item.id"
+              >
+                {{ item.name }}
+              </button>
+            }
+          </tui-data-list>
         </tui-textfield>
       </div>
 
       <footer>
-        <a tuiButton appearance="secondary" size="m" routerLink="/products">Cancel</a>
-        <button tuiButton size="m" type="button">
-          {{ mode() === 'edit' ? 'Update' : 'Save' }}
+        <a tuiButton appearance="secondary" size="m"
+           [routerLink]="s.isEdit() ? ['/products', id()] : '/products'">Cancel</a>
+        <button tuiButton size="m" type="submit" [disabled]="s.saving()">
+          {{ s.saving() ? 'Saving…' : s.isEdit() ? 'Update' : 'Save' }}
         </button>
       </footer>
-    </section>
+    </form>
+  }
+<!--  <form [formGroup]="form" class="grid-3">-->
+<!--    <section tuiCardLarge appearance="outline-grayscale" tuiForm="m" class="span-2">-->
+<!--      <header tuiHeader="h5"><h3 tuiTitle>Details</h3></header>-->
+<!--      <div class="grid-2">-->
+<!--        <tui-textfield>-->
+<!--          <label tuiLabel>Name</label>-->
+<!--          <input tuiInput formControlName="name" placeholder="Laptop Pro 15" />-->
+<!--        </tui-textfield>-->
+<!--        <tui-textfield>-->
+<!--          <label tuiLabel>SKU</label>-->
+<!--          <input tuiInput formControlName="sku" placeholder="LP-15-001" />-->
+<!--        </tui-textfield>-->
 
-    <section tuiCardLarge appearance="outline-grayscale">
-      <header tuiHeader="h5">
-        <h3 tuiTitle>
-          Product image
-          <span tuiSubtitle>Optional</span>
-        </h3>
-      </header>
-      <label tuiInputFiles>
-        <input accept="image/*" tuiInputFiles formControlName="image" />
-      </label>
-    </section>
-  </form>
+<!--      </div>-->
+
+<!--      <header tuiHeader="h5"><h3 tuiTitle>Pricing &amp; stock</h3></header>-->
+<!--      <div class="grid-2">-->
+<!--        <tui-textfield>-->
+<!--          <label tuiLabel>Unit price</label>-->
+<!--          <input tuiInputNumber prefix="$ " formControlName="unitPrice" />-->
+<!--        </tui-textfield>-->
+<!--        <tui-textfield>-->
+<!--          <label tuiLabel>Cost price</label>-->
+<!--          <input tuiInputNumber prefix="$ " formControlName="costPrice" />-->
+<!--        </tui-textfield>-->
+<!--        <tui-textfield>-->
+<!--          <label tuiLabel>Stock quantity</label>-->
+<!--          <input tuiInputNumber formControlName="stockQuantity" />-->
+<!--        </tui-textfield>-->
+<!--        <tui-textfield>-->
+<!--          <label tuiLabel>Reorder level</label>-->
+<!--          <input tuiInputNumber formControlName="reorderLevel" />-->
+<!--        </tui-textfield>-->
+<!--      </div>-->
+
+<!--      <footer>-->
+<!--        <a tuiButton appearance="secondary" size="m" routerLink="/products">Cancel</a>-->
+<!--        <button tuiButton size="m" type="button">-->
+<!--          {{ s.isEdit() ?  'Update' : 'Save' }}-->
+<!--        </button>-->
+<!--      </footer>-->
+<!--    </section>-->
+<!--  </form>-->
 </div>

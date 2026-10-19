@@ -21,10 +21,11 @@ export interface Column<T = any> {
   key: string;
   label: string;
   type?: ColumnType;
+  placeholder?: string;
   value?: (row: T) => unknown;
 }
 
-export type RowAction = 'view' | 'edit' | 'delete';
+export type RowAction = 'view' | 'edit' | 'cedit' |'delete';
 
 export interface ExtraAction {
   icon: string;
@@ -49,6 +50,7 @@ export class DataTable {
 
   protected readonly size = signal(10);
   readonly deleteRow = output<string>();
+  readonly editRow = output<string>();
 
   readonly page = input(1);
   readonly pageSize = input(20);
