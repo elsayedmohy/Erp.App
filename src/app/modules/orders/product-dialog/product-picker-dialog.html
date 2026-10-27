@@ -1,0 +1,120 @@
+<div class="picker">
+  <header class="picker__header">
+    <div>
+      <h2>Choose products</h2>
+      <p>Select products to add to the order.</p>
+    </div>
+
+    <div class="picker__count">
+      {{ selectedCount() }} selected
+    </div>
+  </header>
+
+  <label class="search">
+    <span>Search products</span>
+    <input
+      type="search"
+      placeholder="Name, SKU, barcode, category..."
+      [value]="search()"
+      (input)="search.set($any($event.target).value)"
+    />
+  </label>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+      <tr>
+        <th>
+          <input
+            type="checkbox"
+            aria-label="Select all filtered products"
+            [checked]="allFilteredSelected()"
+            (change)="toggleAll($any($event.target).checked)"
+          />
+        </th>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Stock</th>
+      </tr>
+      </thead>
+
+      <tbody>
+        @for (product of filteredProducts(); track product.id) {
+          <tr
+            [class.selected]="isSelected(product.id)"
+            (click)="toggleProduct(product)"
+          >
+            <td>
+              <input
+                type="checkbox"
+                [checked]="isSelected(product.id)"
+                [attr.aria-label]="'Select ' + product.name"
+                (click)="$event.stopPropagation()"
+                (change)="toggleProduct(product)"
+              />
+            </td>
+
+            <td>
+              <div class="product">
+                <div class="product__placeholder">P</div>
+
+                <div>
+                  <strong>{{ product.name }}</strong>
+                  <small>SKU: {{ product.sku }}</small>
+                </div>
+              </div>
+            </td>
+
+
+            <td class="price">
+              {{ product.unitPrice | number:'1.2-2' }}
+            </td>
+
+            <td>
+              <span
+                class="stock"
+                [class.stock--low]="product.stockQuantity <= 5"
+              >
+                {{ product.stockQuantity }}
+              </span>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="empty">
+              No products found.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="picker__footer">
+    <div class="summary">
+      <span>{{ selectedCount() }} products selected</span>
+      <strong>{{ total() | number:'1.2-2' }} EGP</strong>
+      <small>Sum of selected unit prices, excluding quantities.</small>
+    </div>
+
+    <div class="actions">
+      <button
+        tuiButton
+        type="button"
+        appearance="flat"
+        (click)="cancel()"
+      >
+        Cancel
+      </button>
+
+      <button
+        tuiButton
+        type="button"
+        [disabled]="selectedCount() === 0"
+        (click)="confirm()"
+      >
+        Add selected ({{ selectedCount() }})
+      </button>
+    </div>
+  </footer>
+</div>

@@ -1,19 +1,26 @@
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '@core/http/api.service';
-import { PagedResult, PageQuery } from '../../models';
-import { CreateOrderRequest, Order, UpdateOrderRequest } from './models';
+import { PagedResult } from '../../models';
+import {
+  CreateOrderRequest,
+  Order,
+  OrderDetails,
+  OrderQuery,
+  UpdateOrderRequest,
+  UpdateOrderStatusRequest,
+} from './models';
 
 @Service()
 export class OrdersService {
   private readonly api = inject(ApiService);
 
-  list(query: PageQuery): Observable<PagedResult<Order>> {
+  list(query: OrderQuery): Observable<PagedResult<Order>> {
     return this.api.get<PagedResult<Order>>(`orders`, { params: query });
   }
 
-  getById(id: string): Observable<Order> {
-    return this.api.get<Order>(`orders/${id}`);
+  getById(id: string): Observable<OrderDetails> {
+    return this.api.get<OrderDetails>(`orders/${id}`);
   }
 
   create(payload: CreateOrderRequest): Observable<Order> {
@@ -22,6 +29,10 @@ export class OrdersService {
 
   update(id: string, payload: UpdateOrderRequest): Observable<Order> {
     return this.api.put<Order>(`orders/${id}`, payload);
+  }
+
+  updateStatus(id: string, payload: UpdateOrderStatusRequest): Observable<Order> {
+    return this.api.patch<Order>(`orders/${id}/status`, payload);
   }
 
   delete(id: string): any {

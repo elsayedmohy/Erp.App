@@ -3,27 +3,9 @@ import { Component, input, output, signal } from '@angular/core';
 import { UI } from '../../ui';
 import { EmptyState } from '../empty-state/empty-state';
 import { StatusBadge } from '../status-badge/status-badge';
+import { Column } from '../../../modules/models';
 
-export type ColumnType =
-  | 'text'
-  | 'strong'
-  | 'money'
-  | 'number'
-  | 'badge'
-  | 'person'
-  | 'tags'
-  | 'bool'
-  | 'mono'
-  | 'stock'
-  | 'progress';
 
-export interface Column<T = any> {
-  key: string;
-  label: string;
-  type?: ColumnType;
-  placeholder?: string;
-  value?: (row: T) => unknown;
-}
 
 export type RowAction = 'view' | 'edit' | 'cedit' |'delete';
 

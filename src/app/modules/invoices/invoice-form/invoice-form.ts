@@ -39,13 +39,13 @@ import { UI } from '@shared/ui';
         </div>
 
         <header tuiHeader="h5"><h3 tuiTitle>Line items</h3></header>
-        <app-line-items-editor
-          [items]="lines"
-          itemMode="description"
-          [showTax]="true"
-          [taxRates]="taxRates"
-          [total]="total"
-        />
+<!--        <app-line-items-editor-->
+<!--          [items]="lines"-->
+<!--          itemMode="description"-->
+<!--          [showTax]="true"-->
+<!--          [taxRates]="taxRates"-->
+<!--          [total]="total"-->
+<!--        />-->
 
         <footer>
           <a tuiButton appearance="secondary" size="m" routerLink="/invoices">Cancel</a>

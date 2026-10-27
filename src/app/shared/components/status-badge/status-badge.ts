@@ -36,7 +36,6 @@ const APPEARANCE: Record<string, string> = {
   Disabled: 'neutral',
 };
 
-/** Pure presentation: maps a status string to a coloured Taiga badge. */
 @Component({
   selector: 'app-status-badge',
   imports: [TuiBadge, TuiStatus],
@@ -46,6 +45,6 @@ const APPEARANCE: Record<string, string> = {
 })
 export class StatusBadge {
   readonly status = input.required<string>();
-  readonly size = input<'s' | 'm' | 'l' | 'xl'>('m');
+  readonly size = input<'s' | 'm' | 'l' | 'xl'>('l');
   protected readonly appearance = computed(() => APPEARANCE[this.status()] ?? 'neutral');
 }

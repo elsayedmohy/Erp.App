@@ -1,11 +1,9 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
-import { MOCK_INVOICES, MOCK_ORDERS } from '@mock/mock-data';
-import { type Column, DataTable } from '@shared/components/data-table/data-table';
+import { DataTable } from '@shared/components/data-table/data-table';
 import { PageHeader } from '@shared/components/page-header/page-header';
 import { UI } from '@shared/ui';
-import { ActivatedRoute } from '@angular/router';
 import { CustomersService } from '../data/customers.service';
-import { Customer, CustomerQuery } from '../data/model';
+import { Customer } from '../data/model';
 import { PageLoader } from '@shared/components/page-loader/page-loader';
 import { TUI_CONFIRM } from '@taiga-ui/kit';
 import { filter, switchMap } from 'rxjs';
@@ -20,6 +18,7 @@ import { TableSkeleton } from '@shared/ui/skeleton/table-skeleton';
 import { InvoiceService } from '../../invoices/data/invoice.service';
 import { OrderQuery } from '../../orders/data/models';
 import { OrdersService } from '../../orders/data/orders.service';
+import { Column } from '../../models';
 
 @Component({
   selector: 'app-customer-detail',

@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import type { TuiDayRange } from '@taiga-ui/cdk';
 import { MOCK_CUSTOMERS, MOCK_INVOICE_STATUSES, MOCK_INVOICES } from '@mock/mock-data';
-import { DataTable, type Column } from '@shared/components/data-table/data-table';
+import { DataTable } from '@shared/components/data-table/data-table';
 import { FilterBar } from '@shared/components/filter-bar/filter-bar';
 import { PageHeader } from '@shared/components/page-header/page-header';
 import { UI } from '@shared/ui';
+import { Column } from '../../models';
 
 @Component({
   selector: 'app-invoices-list',

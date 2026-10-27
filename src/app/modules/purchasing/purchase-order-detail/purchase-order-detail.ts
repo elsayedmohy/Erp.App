@@ -55,12 +55,12 @@ import { UI } from '@shared/ui';
       <div class="grid-3">
         <section tuiCardLarge appearance="outline-grayscale" class="span-2">
           <header tuiHeader="h5"><h3 tuiTitle>Line items</h3></header>
-          <app-line-items-editor
-            [items]="order.lines"
-            [products]="products"
-            priceLabel="Unit cost"
-            [total]="order.totalAmount"
-          />
+<!--          <app-line-items-editor-->
+<!--            [items]="order.lines"-->
+<!--            [products]="products"-->
+<!--            priceLabel="Unit cost"-->
+<!--            [total]="order.totalAmount"-->
+<!--          />-->
         </section>
         <section tuiCardLarge appearance="outline-grayscale">
           <header tuiHeader="h5"><h3 tuiTitle>Summary</h3></header>

@@ -1,18 +1,16 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { PageHeader } from '@shared/components/page-header/page-header';
 import { UI } from '@shared/ui';
 import { TuiDialogService } from '@taiga-ui/core';
 import { AlertService } from '@core/services/alert.service';
 import { UserResponse } from '../../users/data/models';
-import { listState } from '@shared/data/list-state';
-import type { Column } from '@shared/components/data-table/data-table';
 import { TUI_CONFIRM, TuiPin } from '@taiga-ui/kit';
 import { filter, map, switchMap } from 'rxjs';
 import { toApiErrorResponse } from '@core/utils/api-error.util';
 import { RolesService } from '../data/roles.service';
-import { PageQuery } from '../../models';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { PermissionGroup, RoleResponse } from '../data/models';
+import { RoleResponse } from '../data/models';
+import { Column } from '../../models';
 
 @Component({
   selector: 'app-roles-list',

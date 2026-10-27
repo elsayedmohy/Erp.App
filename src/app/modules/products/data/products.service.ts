@@ -8,8 +8,8 @@ import { Product, ProductDetails, ProductQuery, ProductRequest } from './models'
 export class ProductsService {
   private readonly api = inject(ApiService);
 
-  list(query: ProductQuery): Observable<PagedResult<Product>> {
-    return this.api.get<PagedResult<Product>>(`products`, { params: query });
+  list(query: ProductQuery | null): Observable<PagedResult<Product>> {
+    return this.api.get<PagedResult<Product>>(`products`, { params: query ?? undefined });
   }
 
   getById(id: string): Observable<ProductDetails> {

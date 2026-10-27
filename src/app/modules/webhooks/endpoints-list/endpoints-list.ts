@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { MOCK_WEBHOOK_ENDPOINTS } from '@mock/mock-data';
-import { DataTable, type Column } from '@shared/components/data-table/data-table';
+import { DataTable } from '@shared/components/data-table/data-table';
 import { PageHeader } from '@shared/components/page-header/page-header';
 import { UI } from '@shared/ui';
+import { Column } from '../../models';
 
 @Component({
   selector: 'app-endpoints-list',

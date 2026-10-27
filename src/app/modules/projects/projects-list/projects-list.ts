@@ -1,10 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { MOCK_PROJECT_STATUSES, MOCK_PROJECTS, MOCK_USERS } from '@mock/mock-data';
-import { DataTable, type Column } from '@shared/components/data-table/data-table';
+import { DataTable } from '@shared/components/data-table/data-table';
 import { FilterBar } from '@shared/components/filter-bar/filter-bar';
 import { PageHeader } from '@shared/components/page-header/page-header';
 import { StatusBadge } from '@shared/components/status-badge/status-badge';
 import { UI } from '@shared/ui';
+import { Column } from '../../models';
 
 @Component({
   selector: 'app-projects-list',

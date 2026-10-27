@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { TuiAxes, TuiBarChart } from '@taiga-ui/addon-charts';
 import { MOCK_CATEGORIES, MOCK_PRODUCTS } from '@mock/mock-data';
-import { DataTable, type Column } from '@shared/components/data-table/data-table';
+import { DataTable } from '@shared/components/data-table/data-table';
 import { StatCard } from '@shared/components/stat-card/stat-card';
 import { UI } from '@shared/ui';
+import { Column } from '../../models';
 
 @Component({
   selector: 'app-inventory-report',

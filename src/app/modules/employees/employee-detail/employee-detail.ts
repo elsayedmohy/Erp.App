@@ -2,9 +2,10 @@ import { DecimalPipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { MOCK_EMPLOYEES, MOCK_TASKS } from '@mock/mock-data';
 import { ConfirmDialog } from '@shared/components/confirm-dialog/confirm-dialog';
-import { DataTable, type Column } from '@shared/components/data-table/data-table';
+import { DataTable } from '@shared/components/data-table/data-table';
 import { PageHeader } from '@shared/components/page-header/page-header';
 import { UI } from '@shared/ui';
+import { Column } from '../../models';
 
 @Component({
   selector: 'app-employee-detail',

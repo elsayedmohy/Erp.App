@@ -1,6 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
 import { ROLE_NAMES } from '@mock/mock-data';
-import { type Column, DataTable } from '@shared/components/data-table/data-table';
 import { FilterBar } from '@shared/components/filter-bar/filter-bar';
 import { PageHeader } from '@shared/components/page-header/page-header';
 import { UI } from '@shared/ui';
@@ -17,6 +16,8 @@ import { filter, map, switchMap } from 'rxjs';
 import { toApiErrorResponse } from '@core/utils/api-error.util';
 import { RolesService } from '../../roles/data/roles.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Column } from '../../models';
+import { DataTable } from '@shared/components/data-table/data-table';
 
 @Component({
   selector: 'app-users-list',

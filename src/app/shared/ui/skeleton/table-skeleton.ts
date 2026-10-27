@@ -1,7 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 import { TuiTable } from '@taiga-ui/addon-table';
 import { TuiSkeleton } from '@taiga-ui/kit';
-import { Column } from '@shared/components/data-table/data-table';
+import { Column } from '../../../modules/models';
 
 const TEXT = ['Lorem ipsum', 'Dolor sit amet', 'Consectetur', 'Adipiscing elit', 'Sed do', 'Tempor incididunt'];
 

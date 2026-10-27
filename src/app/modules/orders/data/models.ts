@@ -10,6 +10,7 @@ export interface OrderQuery extends PageQuery {
 export interface Order {
   id: string;
   customerId: string;
+  customerName: string;
   orderDate: string;
   status: OrderStatus;
   paymentMethod: PaymentMethod;
@@ -17,15 +18,17 @@ export interface Order {
   totalAmount: number;
 }
 
-export interface OrderDetailsResponse {
+export interface OrderDetails {
   id: string;
   customerId: string;
+  invoiceId: string;
+  customerName: string;
   orderDate: string;
   status: OrderStatus;
   paymentMethod: PaymentMethod;
   shippingAddress: string;
   totalAmount: number;
-  lines: OrderLineResponse[];
+  lines: OrderLine[];
 }
 
 export interface CreateOrderRequest {
@@ -42,7 +45,7 @@ export interface UpdateOrderRequest {
 }
 
 export interface UpdateOrderStatusRequest {
-  status: OrderStatus;
+  status: string ;
 }
 
 export interface OrderLineRequest {
@@ -51,9 +54,10 @@ export interface OrderLineRequest {
   discount: number;
 }
 
-export interface OrderLineResponse {
+export interface OrderLine {
   id: string;
   productId: string;
+  productName: string;
   quantity: number;
   unitPrice: number;
   discount: number;

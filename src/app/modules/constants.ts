@@ -1,0 +1,10 @@
+export const ORDER_STATUSES = ['Pending', 'Confirmed', 'Shipped', 'Delivered'];
+export const ROLE_NAMES = ['Admin', 'Manager', 'InventoryManager', 'Accountant', 'Employee'];
+export const PAYMENT_TERMS = ['Net 15', 'Net 30', 'Net 60', 'Due on receipt'];
+export const PAYMENT_METHODS = ['CreditCard', 'BankTransfer', 'Cash', 'Cheque'];
+export const TAX_RATES = ['0%', '5%', '10%', '14%'];
+export const PROJECT_STATUSES = ['Planned', 'Active', 'OnHold', 'Completed'];
+export const TASK_STATUSES = ['ToDo', 'InProgress', 'Blocked', 'Done'];
+export const TASK_PRIORITIES = ['Low', 'Medium', 'High', 'Urgent'];
+export const PO_STATUSES = ['Pending', 'Received', 'Cancelled'];
+export const INVOICE_STATUSES = ['Draft', 'Sent', 'Paid', 'Overdue'];

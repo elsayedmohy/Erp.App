@@ -8,7 +8,7 @@ import { PagedResult, PageQuery } from '../../models';
 export class CustomersService {
   private readonly api = inject(ApiService);
 
-  list(query: PageQuery): Observable<PagedResult<Customer>> {
+  list(query?: PageQuery): Observable<PagedResult<Customer>> {
     return this.api.get<PagedResult<Customer>>(`customers`, { params: query });
   }
 

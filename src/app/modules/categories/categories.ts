@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { type Column, DataTable } from '@shared/components/data-table/data-table';
+import { DataTable } from '@shared/components/data-table/data-table';
 import { PageHeader } from '@shared/components/page-header/page-header';
 import { UI } from '@shared/ui';
 import { listState } from '@shared/data/list-state';
@@ -13,12 +13,12 @@ import { filter, switchMap } from 'rxjs';
 import { toApiErrorResponse } from '@core/utils/api-error.util';
 import { TuiDialogService } from '@taiga-ui/core';
 import { AlertService } from '@core/services/alert.service';
-import { FormControl, FormGroup } from '@angular/forms';
-import { minItems, requiredText } from '@shared/forms/form-utils';
+import { FormGroup } from '@angular/forms';
+import { requiredText } from '@shared/forms/form-utils';
 import { entityForm } from '@shared/forms/entity-form';
-import { RoleResponse } from '../roles/data/models';
-import { Category, CreateCategoryRequest } from './data/models';
+import { CreateCategoryRequest } from './data/models';
 import { Router } from '@angular/router';
+import { Column } from '../models';
 
 @Component({
   selector: 'app-categories',
@@ -60,7 +60,7 @@ import { Router } from '@angular/router';
             [page]="page.page"
             [pageSize]="page.pageSize"
             [total]="page.total"
-            [actions]="['cedit','delete']"
+            [actions]="['cedit', 'delete']"
             (editRow)="edit($event)"
             (deleteRow)="delete($event)"
           />

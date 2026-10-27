@@ -6,11 +6,12 @@ import {
   MOCK_TASKS,
 } from '@mock/mock-data';
 import { ConfirmDialog } from '@shared/components/confirm-dialog/confirm-dialog';
-import { DataTable, type Column } from '@shared/components/data-table/data-table';
+import { DataTable } from '@shared/components/data-table/data-table';
 import { PageHeader } from '@shared/components/page-header/page-header';
 import { StatCard } from '@shared/components/stat-card/stat-card';
 import { StatusBadge } from '@shared/components/status-badge/status-badge';
 import { UI } from '@shared/ui';
+import { Column } from '../../models';
 
 @Component({
   selector: 'app-project-detail',

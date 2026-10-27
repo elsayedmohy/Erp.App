@@ -9,10 +9,11 @@ import {
   MOCK_SALES_CHART_LABELS,
   MOCK_TASKS_BY_STATUS,
 } from '@mock/mock-data';
-import { DataTable, type Column } from '@shared/components/data-table/data-table';
+import { DataTable} from '@shared/components/data-table/data-table';
 import { PageHeader } from '@shared/components/page-header/page-header';
 import { StatCard } from '@shared/components/stat-card/stat-card';
 import { UI } from '@shared/ui';
+import { Column } from '../models';
 
 @Component({
   selector: 'app-dashboard',

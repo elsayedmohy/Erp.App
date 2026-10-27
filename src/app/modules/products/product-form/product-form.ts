@@ -1,30 +1,23 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import type { TuiFileLike } from '@taiga-ui/kit';
-import { MOCK_CATEGORIES } from '@mock/mock-data';
+import { FormControl, FormGroup } from '@angular/forms';
 import { PageHeader } from '@shared/components/page-header/page-header';
 import { UI } from '@shared/ui';
-import { CustomersService } from '../../customers/data/customers.service';
 import { Router } from '@angular/router';
 import { AlertService } from '@core/services/alert.service';
-import { CustomerRequest } from '../../customers/data/model';
 import { requiredNumber, requiredText } from '@shared/forms/form-utils';
 import { entityForm } from '@shared/forms/entity-form';
 import { ProductsService } from '../data/products.service';
-import { ProductRequest } from '../data/models';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CategoriesService } from '../../categories/data/categories.service';
 import { map } from 'rxjs';
 import { ErrorState } from '@shared/components/error-state/error-state';
-import { FieldError } from '@shared/forms/field-error';
 import { PageLoader } from '@shared/components/page-loader/page-loader';
-import { Column } from '@shared/components/data-table/data-table';
 import { TuiStringHandler } from '@taiga-ui/cdk';
-import { Category } from '../../categories/data/models';
+import { Column } from '../../models';
 
 @Component({
   selector: 'app-product-form',
-  imports: [...UI, PageHeader, ErrorState, FieldError, PageLoader],
+  imports: [...UI, PageHeader, ErrorState, PageLoader],
   templateUrl: './product-form.html',
 })
 export class ProductForm {

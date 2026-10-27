@@ -1,8 +1,9 @@
 <div class="table-wrap">
-  <table tuiTable size="m" class="table">
-    <thead>
+  @if (view()) {
+    <table tuiTable size="m" class="table">
+      <thead>
       <tr>
-        <th tuiTh>{{ itemMode() === 'product' ? 'Product' : 'Description' }}</th>
+        <th tuiTh>Product</th>
         <th tuiTh class="qty">Quantity</th>
         <th tuiTh class="price">{{ priceLabel() }}</th>
         @if (showDiscount()) {
@@ -12,71 +13,67 @@
           <th tuiTh class="qty">Tax rate</th>
         }
         <th tuiTh class="num">Line total</th>
+      </tr>
+      </thead>
+      <tbody tuiTbody>
+        @for (item of items(); track $index) {
+          <tr>
+            <td tuiTd>
+              {{item.productName}}
+            </td>
+            <td tuiTd>
+              {{item.quantity}}
+            </td>
+            <td tuiTd >
+              {{item.unitPrice | number: '1.2-2'}}
+            </td>
+            @if (showDiscount()) {
+              <td tuiTd>
+                {{item.discount | number: '1.2-2'}}
+              </td>
+            }
+            <td tuiTd class="num">$ {{ item.quantity * item.unitPrice | number: '1.2-2' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <table tuiTable size="m" class="table">
+      <thead>
+      <tr>
+        <th tuiTh>Product</th>
+        <th tuiTh class="qty">Quantity</th>
+        <th tuiTh class="price">{{ priceLabel() }}</th>
+        <th tuiTh class="num">Line total</th>
         <th tuiTh class="narrow"></th>
       </tr>
-    </thead>
-    <tbody tuiTbody>
-      @for (item of items(); track $index) {
-        <tr>
-          <td tuiTd>
-            @if (itemMode() === 'product') {
-              <tui-textfield tuiChevron tuiTextfieldSize="s" [tuiTextfieldCleaner]="false">
-                <input tuiSelect placeholder="Select product" [ngModel]="item.product" />
-                <tui-data-list-wrapper *tuiDropdown [items]="products()" />
-              </tui-textfield>
-            } @else {
-              <tui-textfield tuiTextfieldSize="s">
-                <input tuiInput placeholder="Description" [ngModel]="item.product" />
-              </tui-textfield>
-            }
-          </td>
-          <td tuiTd>
-            <tui-textfield tuiTextfieldSize="s">
-              <input tuiInputNumber [ngModel]="item.quantity" />
-            </tui-textfield>
-          </td>
-          <td tuiTd>
-            <tui-textfield tuiTextfieldSize="s">
-              <input tuiInputNumber prefix="$ " [ngModel]="item.unitPrice" />
-            </tui-textfield>
-          </td>
-          @if (showDiscount()) {
+      </thead>
+      <tbody tuiTbody>
+        @for (item of selectedProduct(); track $index) {
+          <tr>
             <td tuiTd>
-              <tui-textfield tuiTextfieldSize="s">
-                <input tuiInputNumber postfix=" %" [ngModel]="item.discount ?? 0" />
-              </tui-textfield>
+              {{item.id}}
             </td>
-          }
-          @if (showTax()) {
             <td tuiTd>
-              <tui-textfield tuiChevron tuiTextfieldSize="s" [tuiTextfieldCleaner]="false">
-                <input tuiSelect placeholder="Tax" [ngModel]="taxRates()[0]" />
-                <tui-data-list-wrapper *tuiDropdown [items]="taxRates()" />
-              </tui-textfield>
+              {{item.stockQuantity}}
             </td>
-          }
-          <td tuiTd class="num">$ {{ item.quantity * item.unitPrice | number: '1.2-2' }}</td>
-          <td tuiTd class="narrow">
-            <button
-              tuiIconButton
-              appearance="flat-destructive"
-              size="xs"
-              iconStart="@tui.x"
-              type="button"
-            >
-              Remove
-            </button>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
+            <td tuiTd >
+              {{item.unitPrice | number: '1.2-2'}}
+            </td>
+            <td tuiTd class="num">$ {{ item.stockQuantity * item.unitPrice | number: '1.2-2' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
 </div>
 
 <div class="footer">
-  <button tuiButton appearance="secondary" size="s" iconStart="@tui.plus" type="button">
+  @if (!view()) {
+  <button (click)="chooseProduct()" tuiButton appearance="outline-grayscale"  iconStart="@tui.plus" type="button">
     Add line
   </button>
+  }
   <dl class="totals">
     <dt>Subtotal</dt>
     <dd>$ {{ total() | number: '1.2-2' }}</dd>

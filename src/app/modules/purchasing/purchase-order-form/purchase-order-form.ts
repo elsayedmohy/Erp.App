@@ -34,12 +34,12 @@ import { UI } from '@shared/ui';
         </div>
 
         <header tuiHeader="h5"><h3 tuiTitle>Line items</h3></header>
-        <app-line-items-editor
-          [items]="lines"
-          [products]="products"
-          priceLabel="Unit cost"
-          [total]="total"
-        />
+<!--        <app-line-items-editor-->
+<!--          [items]="lines"-->
+<!--          [products]="products"-->
+<!--          priceLabel="Unit cost"-->
+<!--          [total]="total"-->
+<!--        />-->
 
         <footer>
           <a tuiButton appearance="secondary" size="m" routerLink="/purchasing">Cancel</a>

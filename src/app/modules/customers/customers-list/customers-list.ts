@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { type Column, DataTable } from '@shared/components/data-table/data-table';
+import { DataTable } from '@shared/components/data-table/data-table';
 import { EmptyState } from '@shared/components/empty-state/empty-state';
 import { ErrorState } from '@shared/components/error-state/error-state';
 import { FilterBar } from '@shared/components/filter-bar/filter-bar';
@@ -14,6 +14,7 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { filter, switchMap } from 'rxjs';
 import { toApiErrorResponse } from '@core/utils/api-error.util';
 import { TUI_CONFIRM } from '@taiga-ui/kit';
+import { Column } from '../../models';
 
 @Component({
   selector: 'app-customers-list',

@@ -1,72 +1,113 @@
+@let s = state;
+
 <div class="page">
   <app-page-header
-    [heading]="mode() === 'edit' ? 'Edit order' : 'New order'"
+    [heading]="s.isEdit() ? 'Edit order' : 'New order'"
     [breadcrumbs]="[
       { label: 'Sales' },
       { label: 'Orders', link: '/orders' },
-      { label: mode() === 'edit' ? 'Edit' : 'New' },
+      { label: s.isEdit() ? 'Edit' : 'New' },
     ]"
   />
+  @if (s.loadError()) {
+    <app-error-state heading="Couldn't load order" [message]="s.loadError()!" [retryable]="false">
+      <a tuiButton size="s" appearance="secondary" routerLink="/orders">Back to orders</a>
+    </app-error-state>
+  } @else if (s.loading()) {
+    <page-loader />
+  } @else {
+    <form class="grid-3" tuiCardLarge appearance="outline-grayscale" tuiForm="m" [formGroup]="form" (ngSubmit)="s.submit()">
+      @if (s.formError()) {
+        <div tuiNotification appearance="negative" size="m">{{ s.formError() }}</div>
+      }
 
-  <form tuiCardLarge appearance="outline-grayscale" tuiForm="m" [formGroup]="form">
-    <header tuiHeader="h5"><h3 tuiTitle>Customer</h3></header>
-    <div class="grid-2">
-      <div>
-        <tui-textfield tuiChevron>
-          <label tuiLabel>Customer</label>
-          <input tuiComboBox formControlName="customer" />
-          <tui-data-list-wrapper *tuiDropdown [items]="customers | tuiFilterByInput" />
+      <div class="grid-2">
+        @for (f of fields; track f.key) {
+          <div class="field" >
+            <tui-textfield>
+<!--              <label tuiLabel>{{ f.label }}</label>-->
+
+              @if (f.type != 'date') {
+                <input tuiInput [formControlName]="f.key" [type]="f.type ?? 'text'"
+                       [placeholder]="f.placeholder" />
+              }
+
+              @if (f.type == 'date') {
+                <input tuiInputDate [formControlName]="f.key"
+                       [placeholder]="f.placeholder" />
+                <tui-calendar *tuiDropdown />
+              }
+            </tui-textfield>
+          </div>
+        }
+        <tui-textfield tuiChevron
+                       tuiTextfieldSize="m"
+                       [stringify]="stringify">
+          <input
+            tuiSelect
+            placeholder="All customers"
+            formControlName="customerId"
+          />
+
+
+          <tui-data-list *tuiDropdown>
+            @for (item of customers(); track item) {
+              <button
+                tuiOption
+                type="button"
+                [value]="item.id"
+              >
+                {{ item.name }}
+              </button>
+            }
+          </tui-data-list>
         </tui-textfield>
-        <a tuiLink routerLink="/customers/new" iconStart="@tui.plus" class="inline-link"
-          >Create a new customer</a
-        >
+        <tui-textfield tuiChevron
+                       tuiTextfieldSize="m"
+                       [stringify]="stringify">
+          <input
+            tuiSelect
+            placeholder="Payment Methods"
+            formControlName="paymentMethod"
+          />
+
+
+          <tui-data-list *tuiDropdown>
+            @for (item of paymentMethods; track item) {
+              <button
+                tuiOption
+                type="button"
+                [value]="item"
+              >
+                {{ item }}
+              </button>
+            }
+          </tui-data-list>
+        </tui-textfield>
       </div>
-      <tui-textfield>
-        <label tuiLabel>Order date</label>
-        <input tuiInputDate formControlName="orderDate" />
-        <tui-calendar *tuiDropdown />
-      </tui-textfield>
-    </div>
-
-    <header tuiHeader="h5">
-      <h3 tuiTitle>
-        Order lines
-        <span tuiSubtitle>Unit price auto-fills from the selected product</span>
-      </h3>
-    </header>
-    <app-line-items-editor
-      [items]="lines"
-      [products]="products"
-      [showDiscount]="true"
-      [total]="total"
-    />
-
-    <header tuiHeader="h5"><h3 tuiTitle>Payment &amp; shipping</h3></header>
-    <div class="grid-2">
-      <tui-textfield tuiChevron>
-        <label tuiLabel>Payment method</label>
-        <input tuiSelect formControlName="paymentMethod" />
-        <tui-data-list-wrapper *tuiDropdown [items]="paymentMethods" />
-      </tui-textfield>
-      <tui-textfield>
-        <label tuiLabel>Shipping address</label>
-        <input
-          tuiInput
-          formControlName="shippingAddress"
-          placeholder="123 Main St, New York, USA"
-        />
-      </tui-textfield>
-    </div>
-
-    <div tuiNotification appearance="info" size="s">
-      An invoice is created automatically when the order is placed.
-    </div>
-
-    <footer>
-      <a tuiButton appearance="secondary" size="m" routerLink="/orders">Cancel</a>
-      <button tuiButton size="m" type="button">
-        {{ mode() === 'edit' ? 'Update order' : 'Place order' }}
-      </button>
-    </footer>
-  </form>
+      <header tuiHeader="h5">
+        <h3 tuiTitle>
+          Order lines
+          <span tuiSubtitle>Unit price auto-fills from the selected product</span>
+        </h3>
+      </header>
+          <app-line-items-editor
+            [view]="false"
+            [items]="[]"
+            [products]="products()"
+            [showDiscount]="true"
+            [total]="0"
+          />
+      <div tuiNotification appearance="info" size="s">
+        An invoice is created automatically when the order is placed.
+      </div>
+      <footer>
+        <a tuiButton appearance="secondary" size="m"
+           [routerLink]="s.isEdit() ? ['/orders', id()] : '/orders'">Cancel</a>
+        <button tuiButton size="m" type="submit" [disabled]="s.saving()">
+          {{ s.saving() ? 'Saving…' : s.isEdit() ? 'Update order' : 'Place order' }}
+        </button>
+      </footer>
+    </form>
+  }
 </div>
